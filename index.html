@@ -92,7 +92,7 @@
         }
 
         select[multiple] {
-            height: 80px;
+            height: 100px; 
         }
 
         .color-pickers-panel {
@@ -216,6 +216,16 @@
             position: relative;
             box-sizing: border-box;
         }
+        
+        /* Highlight Today Styling */
+        .day-cell.is-today {
+            background-color: #eff6ff !important; 
+            box-shadow: inset 0 0 0 2px var(--primary); 
+        }
+        .day-cell.is-today .day-num {
+            color: var(--primary);
+            font-weight: 700;
+        }
 
         .day-num { 
             font-size: 0.875rem; 
@@ -247,7 +257,7 @@
 
         .summary-item {
             display: grid;
-            grid-template-columns: 8px 30px 1fr;
+            grid-template-columns: 8px 40px 1fr;
             align-items: center;
             gap: 12px;
             padding: 6px 0;
@@ -263,14 +273,14 @@
             border-radius: 50%;
         }
 
-        .summary-date { font-weight: 500; color: var(--text-muted); }
+        .summary-date { font-weight: 500; color: var(--text-muted); white-space: nowrap; }
         .summary-name { font-weight: 500; }
 
         /* === PDF STRICT OPTIMIZATION (A4 Portrait, Single Page) === */
         @media print {
             @page { 
                 size: A4 portrait; 
-                margin: 10mm; /* Strict 1cm margins */
+                margin: 10mm; 
             }
             .no-print { display: none !important; }
             body { padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -282,7 +292,6 @@
             }
             
             .month-card { 
-                /* Lock exactly to mathematically fit 4 rows in A4 length (297mm - 20mm margin = 277mm) */
                 height: 65mm !important; 
                 overflow: hidden !important; 
                 margin: 0 !important;
@@ -296,10 +305,21 @@
                 padding-bottom: 2px !important;
             }
             
-            .days-grid { background: #d1d5db !important; border: 1px solid #d1d5db !important; }
-            .day-header { font-size: 0.5rem !important; padding: 2px 0 !important; }
-            .day-cell { min-height: 22px !important; padding: 2px !important; }
+            /* Borderless grid for PDF */
+            .days-grid { background: transparent !important; border: none !important; gap: 0 !important;}
+            .day-header { font-size: 0.5rem !important; padding: 2px 0 !important; border: none !important;}
+            .day-cell { min-height: 22px !important; padding: 2px !important; border: none !important;}
+            .empty-cell { background: transparent !important; }
             .day-num { font-size: 0.6rem !important; margin-bottom: 2px !important; }
+
+            .day-cell.is-today {
+                background-color: transparent !important;
+                box-shadow: none !important;
+            }
+            .day-cell.is-today .day-num {
+                color: #000 !important;
+                text-decoration: underline; /* Alternative subtle highlight for borderless */
+            }
             
             /* Hide Text labels, show dot markers */
             .holiday-label { display: none !important; }
@@ -316,15 +336,28 @@
                 height: 6px !important; 
                 border-radius: 50% !important; 
             }
-
-            .month-summary { margin-top: 2px !important; overflow: hidden !important; }
-            .summary-item { 
-                padding: 1px 0 !important; 
-                gap: 4px !important; 
-                font-size: 0.55rem !important; 
-                grid-template-columns: 6px 16px 1fr !important; 
+            /* Exception for Birthday Emoji Dot in Print */
+            .birthday-dot {
+                background-color: transparent !important;
+                width: auto !important;
+                height: auto !important;
+                font-size: 8px !important;
+                line-height: 1 !important;
             }
-            .summary-color { width: 5px !important; height: 5px !important; }
+
+            /* Tighter, smaller summary for PDF */
+            .month-summary { margin-top: 1px !important; overflow: hidden !important; }
+            .summary-item { 
+                padding: 0 !important; 
+                margin-bottom: 1px !important;
+                gap: 3px !important; 
+                font-size: 0.45rem !important; /* Reduced font size */
+                line-height: 1.1 !important; /* Reduced line spacing */
+                align-items: start !important;
+                grid-template-columns: 4px 18px 1fr !important; 
+                border-bottom: none !important;
+            }
+            .summary-color { width: 4px !important; height: 4px !important; margin-top: 2px !important; }
         }
     </style>
 </head>
@@ -347,22 +380,37 @@
                     <option value="NATIONAL">National</option>
                     <option value="KUALA LUMPUR">Kuala Lumpur</option>
                     <option value="SELANGOR">Selangor</option>
+                    <option value="ON LEAVE">On Leave</option>
+                    <option value="BIRTHDAY">Birthday</option>
+                    <option value="SCHOOL">School</option>
                 </select>
             </div>
         </div>
 
         <div class="color-pickers-panel">
             <div class="picker-row">
-                <span>National Theme</span>
+                <span>National</span>
                 <div class="palette-options" id="palette-national"></div>
             </div>
             <div class="picker-row">
-                <span>Kuala Lumpur Theme</span>
+                <span>Kuala Lumpur</span>
                 <div class="palette-options" id="palette-kl"></div>
             </div>
             <div class="picker-row">
-                <span>Selangor Theme</span>
+                <span>Selangor</span>
                 <div class="palette-options" id="palette-selangor"></div>
+            </div>
+            <div class="picker-row">
+                <span>On Leave</span>
+                <div class="palette-options" id="palette-onleave"></div>
+            </div>
+            <div class="picker-row">
+                <span>Birthday</span>
+                <div class="palette-options" id="palette-birthday"></div>
+            </div>
+            <div class="picker-row">
+                <span>School</span>
+                <div class="palette-options" id="palette-school"></div>
             </div>
         </div>
 
@@ -378,34 +426,38 @@
         let rawEvents = [];
         
         const global9Palettes = [
-            { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af' }, 
-            { bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46' }, 
-            { bg: '#fff7ed', border: '#ffedd5', text: '#9a3412' }, 
-            { bg: '#fef2f2', border: '#fecaca', text: '#991b1b' }, 
-            { bg: '#faf5ff', border: '#e9d5ff', text: '#6b21a8' }, 
-            { bg: '#fdf2f8', border: '#fbcfe8', text: '#9d174d' }, 
-            { bg: '#fefce8', border: '#fef08a', text: '#854d0e' }, 
-            { bg: '#f0fdfa', border: '#99f6e4', text: '#115e59' }, 
-            { bg: '#f8fafc', border: '#e2e8f0', text: '#334155' }  
+            { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af' }, // 0 Blue
+            { bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46' }, // 1 Green
+            { bg: '#fff7ed', border: '#ffedd5', text: '#9a3412' }, // 2 Orange
+            { bg: '#fef2f2', border: '#fecaca', text: '#991b1b' }, // 3 Red
+            { bg: '#faf5ff', border: '#e9d5ff', text: '#6b21a8' }, // 4 Purple
+            { bg: '#fdf2f8', border: '#fbcfe8', text: '#9d174d' }, // 5 Pink
+            { bg: '#fefce8', border: '#fef08a', text: '#854d0e' }, // 6 Yellow
+            { bg: '#f0fdfa', border: '#99f6e4', text: '#115e59' }, // 7 Teal
+            { bg: '#f8fafc', border: '#e2e8f0', text: '#334155' }  // 8 Slate Gray
         ];
 
         // Default Tracking
         let activeSelectionIndexes = {
             'NATIONAL': 0,
             'KUALA LUMPUR': 1,
-            'SELANGOR': 2
+            'SELANGOR': 2,
+            'ON LEAVE': 3,
+            'BIRTHDAY': 5, 
+            'SCHOOL': 6 
         };
 
         const defaultUnspecifiedTheme = { bg: '#f9fafb', border: '#e5e7eb', text: '#374151' };
 
-        // HTML ID mapping logic avoids spacing bugs
         const pickerMappings = [
             { id: 'palette-national', key: 'NATIONAL' },
             { id: 'palette-kl', key: 'KUALA LUMPUR' },
-            { id: 'palette-selangor', key: 'SELANGOR' }
+            { id: 'palette-selangor', key: 'SELANGOR' },
+            { id: 'palette-onleave', key: 'ON LEAVE' },
+            { id: 'palette-birthday', key: 'BIRTHDAY' },
+            { id: 'palette-school', key: 'SCHOOL' }
         ];
 
-        // Fuzzy match allows correct color fetch even if input string has slight variations
         function getThemeForLocation(loc) {
             const upLoc = loc.toUpperCase();
             for (const [key, idx] of Object.entries(activeSelectionIndexes)) {
@@ -505,6 +557,11 @@
             let syncYear = yearText ? parseInt(yearText, 10) : new Date().getFullYear();
             if (isNaN(syncYear)) syncYear = new Date().getFullYear();
 
+            const realToday = new Date();
+            const isCurrentYear = syncYear === realToday.getFullYear();
+            const realTodayMonth = realToday.getMonth();
+            const realTodayDate = realToday.getDate();
+
             for (let monthIdx = 0; monthIdx < 12; monthIdx++) {
                 
                 const monthEvents = rawEvents.filter(ev => {
@@ -522,12 +579,10 @@
                 const daysGrid = document.createElement('div');
                 daysGrid.className = 'days-grid';
                 
-                // Changed to Monday-First Week
                 ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(d => {
                     daysGrid.innerHTML += `<div class="day-header">${d}</div>`;
                 });
 
-                // Adjusted Math for Monday-First Week (+6 % 7 shifts Sunday from 0 to 6)
                 const firstDayIndex = (new Date(syncYear, monthIdx, 1).getDay() + 6) % 7;
                 const totalDays = new Date(syncYear, monthIdx + 1, 0).getDate();
 
@@ -545,6 +600,11 @@
                 for (let day = 1; day <= totalDays; day++) {
                     const cell = document.createElement('div');
                     cell.className = 'day-cell';
+                    
+                    if (isCurrentYear && monthIdx === realTodayMonth && day === realTodayDate) {
+                        cell.classList.add('is-today');
+                    }
+                    
                     cell.innerHTML = `<div class="day-num">${day}</div>`;
                     
                     if (eventDayMap[day]) {
@@ -554,6 +614,7 @@
 
                         eventDayMap[day].forEach(ev => {
                             const theme = getThemeForLocation(ev.location);
+                            const isBirthday = ev.location.toUpperCase().includes('BIRTHDAY');
                             
                             // Normal Screen Label
                             const label = document.createElement('div');
@@ -561,13 +622,17 @@
                             label.style.backgroundColor = theme.bg;
                             label.style.borderLeft = `3px solid ${theme.border}`;
                             label.style.color = theme.text;
-                            label.textContent = ev.holiday;
+                            label.textContent = isBirthday ? `🎂 ${ev.holiday}` : ev.holiday;
                             cell.appendChild(label);
 
-                            // PDF-only Color Marker Dot
+                            // PDF-only Color Marker / Emoji Dot
                             const printDot = document.createElement('div');
-                            printDot.className = 'holiday-dot';
-                            printDot.style.backgroundColor = theme.text;
+                            printDot.className = isBirthday ? 'holiday-dot birthday-dot' : 'holiday-dot';
+                            if (isBirthday) {
+                                printDot.textContent = '🎂';
+                            } else {
+                                printDot.style.backgroundColor = theme.text;
+                            }
                             dotsContainer.appendChild(printDot);
                         });
                         
@@ -580,17 +645,47 @@
                 const summaryDiv = document.createElement('div');
                 summaryDiv.className = 'month-summary';
 
-                // Display summary item
-                monthEvents.sort((a, b) => a.date.getDate() - b.date.getDate()).forEach(ev => {
+                let groupedDict = {};
+                monthEvents.forEach(ev => {
+                    const key = ev.holiday + '|' + ev.location;
+                    if (!groupedDict[key]) groupedDict[key] = [];
+                    groupedDict[key].push(ev);
+                });
+
+                let consolidatedEvents = [];
+                Object.values(groupedDict).forEach(groupArr => {
+                    groupArr.sort((a, b) => a.date.getDate() - b.date.getDate());
+                    
+                    let currentChain = null;
+                    groupArr.forEach(ev => {
+                        if (!currentChain) {
+                            currentChain = { ...ev, endDate: ev.date };
+                        } else {
+                            if (ev.date.getDate() === currentChain.endDate.getDate() + 1 || ev.date.getDate() === currentChain.endDate.getDate()) {
+                                currentChain.endDate = ev.date; 
+                            } else {
+                                consolidatedEvents.push(currentChain);
+                                currentChain = { ...ev, endDate: ev.date };
+                            }
+                        }
+                    });
+                    if (currentChain) consolidatedEvents.push(currentChain);
+                });
+
+                consolidatedEvents.sort((a, b) => a.date.getDate() - b.date.getDate()).forEach(group => {
                     const item = document.createElement('div');
                     item.className = 'summary-item';
-                    const dateFmt = String(ev.date.getDate()).padStart(2, '0');
-                    const theme = getThemeForLocation(ev.location);
+                    
+                    const startDay = String(group.date.getDate()).padStart(2, '0');
+                    const endDay = String(group.endDate.getDate()).padStart(2, '0');
+                    const dateDisplay = (startDay === endDay) ? startDay : `${startDay}-${endDay}`;
+                    
+                    const theme = getThemeForLocation(group.location);
                     
                     item.innerHTML = `
                         <div class="summary-color" style="background-color: ${theme.text}"></div>
-                        <div class="summary-date">${dateFmt}</div>
-                        <div class="summary-name" style="color: ${theme.text}">${ev.holiday}</div>
+                        <div class="summary-date">${dateDisplay}</div>
+                        <div class="summary-name" style="color: ${theme.text}">${group.holiday}</div>
                     `;
                     summaryDiv.appendChild(item);
                 });
