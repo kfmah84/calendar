@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Flat Calendar Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --black-btn: #111827;
+            --black-btn-hover: #374151;
+            --radius: 0px; 
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px;
+            line-height: 1.5;
+        }
+
+        h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .no-print {
+            background: var(--bg);
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            padding: 12px;
+            font-family: monospace;
+            box-sizing: border-box;
+            background: #f9fafb;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus { border-color: var(--text-main); }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        input[type="number"], select[multiple] {
+            border: 1px solid var(--border);
+            padding: 10px;
+            font-family: inherit;
+            outline: none;
+            background: var(--bg);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        input[type="number"]:focus, select[multiple]:focus {
+            border-color: var(--text-main);
+        }
+
+        select[multiple] {
+            height: 80px;
+        }
+
+        .color-pickers-panel {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border: 1px solid var(--border);
+        }
+
+        .picker-row {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .picker-row span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .palette-options {
+            display: flex;
+            gap: 4px;
+        }
+
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .color-swatch.active::after {
+            content: '✓';
+            color: #111827;
+            font-size: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        button {
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-generate { background-color: var(--primary); }
+        .btn-generate:hover { background-color: var(--primary-hover); }
+        
+        .btn-print { background-color: var(--black-btn); }
+        .btn-print:hover { background-color: var(--black-btn-hover); }
+
+        /* Calendar Grid Layout - 3 columns */
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .month-card {
+            display: flex;
+            flex-direction: column;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            overflow: visible; 
+        }
+
+        .month-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--text-main);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+
+        .day-header {
+            background: var(--bg);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 8px 0;
+            text-align: center;
+        }
+
+        .day-cell {
+            background: var(--bg);
+            min-height: 60px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .day-num { 
+            font-size: 0.875rem; 
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .empty-cell { background: #f9fafb; }
+
+        /* Screen Labels */
+        .holiday-label {
+            font-size: 0.7rem;
+            line-height: 1.2;
+            padding: 3px 4px;
+            margin-top: 2px;
+            border-left: 3px solid transparent;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        /* Screen Dot (Hidden by default, used only in Print) */
+        .dots-container { display: none; }
+        .holiday-dot { display: none; }
+
+        .month-summary {
+            margin-top: 12px;
+            overflow: visible; 
+        }
+
+        .summary-item {
+            display: grid;
+            grid-template-columns: 8px 30px 1fr;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.825rem;
+        }
+
+        .summary-item:last-child { border-bottom: none; }
+
+        .summary-color {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .summary-date { font-weight: 500; color: var(--text-muted); }
+        .summary-name { font-weight: 500; }
+
+        /* === PDF STRICT OPTIMIZATION (A4 Portrait, Single Page) === */
+        @media print {
+            @page { 
+                size: A4 portrait; 
+                margin: 10mm; /* Strict 1cm margins */
+            }
+            .no-print { display: none !important; }
+            body { padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            
+            .calendar-container { 
+                display: grid !important; 
+                grid-template-columns: repeat(3, 1fr) !important; 
+                gap: 5mm !important; 
+            }
+            
+            .month-card { 
+                /* Lock exactly to mathematically fit 4 rows in A4 length (297mm - 20mm margin = 277mm) */
+                height: 65mm !important; 
+                overflow: hidden !important; 
+                margin: 0 !important;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .month-title {
+                font-size: 0.75rem !important;
+                margin-bottom: 2px !important;
+                padding-bottom: 2px !important;
+            }
+            
+            .days-grid { background: #d1d5db !important; border: 1px solid #d1d5db !important; }
+            .day-header { font-size: 0.5rem !important; padding: 2px 0 !important; }
+            .day-cell { min-height: 22px !important; padding: 2px !important; }
+            .day-num { font-size: 0.6rem !important; margin-bottom: 2px !important; }
+            
+            /* Hide Text labels, show dot markers */
+            .holiday-label { display: none !important; }
+            .dots-container {
+                display: flex !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+                gap: 2px !important;
+                margin-top: auto !important;
+            }
+            .holiday-dot { 
+                display: inline-block !important; 
+                width: 6px !important; 
+                height: 6px !important; 
+                border-radius: 50% !important; 
+            }
+
+            .month-summary { margin-top: 2px !important; overflow: hidden !important; }
+            .summary-item { 
+                padding: 1px 0 !important; 
+                gap: 4px !important; 
+                font-size: 0.55rem !important; 
+                grid-template-columns: 6px 16px 1fr !important; 
+            }
+            .summary-color { width: 5px !important; height: 5px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <h2>Calendar Generator</h2>
+        
+        <textarea id="pasteArea" placeholder="Paste tab-separated data here..."></textarea>
+        
+        <div class="controls-grid">
+            <div class="control-group">
+                <label for="manualYear">Display & Sync Year</label>
+                <input type="number" id="manualYear" placeholder="e.g., 2026" value="2026" oninput="renderCalendar()">
+            </div>
+
+            <div class="control-group">
+                <label for="locationFilter">Filter Locations (Ctrl+Click)</label>
+                <select id="locationFilter" multiple onchange="renderCalendar()">
+                    <option value="NATIONAL">National</option>
+                    <option value="KUALA LUMPUR">Kuala Lumpur</option>
+                    <option value="SELANGOR">Selangor</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="color-pickers-panel">
+            <div class="picker-row">
+                <span>National Theme</span>
+                <div class="palette-options" id="palette-national"></div>
+            </div>
+            <div class="picker-row">
+                <span>Kuala Lumpur Theme</span>
+                <div class="palette-options" id="palette-kl"></div>
+            </div>
+            <div class="picker-row">
+                <span>Selangor Theme</span>
+                <div class="palette-options" id="palette-selangor"></div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-generate" onclick="processData()">Load Data</button>
+            <button class="btn-print" onclick="window.print()">Export to PDF</button>
+        </div>
+    </div>
+
+    <div class="calendar-container" id="calendarContainer"></div>
+
+    <script>
+        let rawEvents = [];
+        
+        const global9Palettes = [
+            { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af' }, 
+            { bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46' }, 
+            { bg: '#fff7ed', border: '#ffedd5', text: '#9a3412' }, 
+            { bg: '#fef2f2', border: '#fecaca', text: '#991b1b' }, 
+            { bg: '#faf5ff', border: '#e9d5ff', text: '#6b21a8' }, 
+            { bg: '#fdf2f8', border: '#fbcfe8', text: '#9d174d' }, 
+            { bg: '#fefce8', border: '#fef08a', text: '#854d0e' }, 
+            { bg: '#f0fdfa', border: '#99f6e4', text: '#115e59' }, 
+            { bg: '#f8fafc', border: '#e2e8f0', text: '#334155' }  
+        ];
+
+        // Default Tracking
+        let activeSelectionIndexes = {
+            'NATIONAL': 0,
+            'KUALA LUMPUR': 1,
+            'SELANGOR': 2
+        };
+
+        const defaultUnspecifiedTheme = { bg: '#f9fafb', border: '#e5e7eb', text: '#374151' };
+
+        // HTML ID mapping logic avoids spacing bugs
+        const pickerMappings = [
+            { id: 'palette-national', key: 'NATIONAL' },
+            { id: 'palette-kl', key: 'KUALA LUMPUR' },
+            { id: 'palette-selangor', key: 'SELANGOR' }
+        ];
+
+        // Fuzzy match allows correct color fetch even if input string has slight variations
+        function getThemeForLocation(loc) {
+            const upLoc = loc.toUpperCase();
+            for (const [key, idx] of Object.entries(activeSelectionIndexes)) {
+                if (upLoc.includes(key)) return global9Palettes[idx];
+            }
+            return defaultUnspecifiedTheme;
+        }
+
+        function initColorPickers() {
+            pickerMappings.forEach(mapping => {
+                const container = document.getElementById(mapping.id);
+                container.innerHTML = '';
+                
+                global9Palettes.forEach((palette, idx) => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'color-swatch';
+                    swatch.style.backgroundColor = palette.bg;
+                    swatch.style.borderColor = palette.border;
+                    if (idx === activeSelectionIndexes[mapping.key]) {
+                        swatch.classList.add('active');
+                    }
+                    
+                    swatch.onclick = () => {
+                        activeSelectionIndexes[mapping.key] = idx;
+                        Array.from(container.children).forEach(c => c.classList.remove('active'));
+                        swatch.classList.add('active');
+                        renderCalendar();
+                    };
+                    container.appendChild(swatch);
+                });
+            });
+        }
+
+        function normalizeString(str) {
+            return str ? str.trim().replace(/\s+/g, ' ') : 'Unspecified';
+        }
+
+        function parseFlexibleDate(dateStr, defaultYear) {
+            let cleanStr = dateStr.trim();
+            if (/^\d+$/.test(cleanStr)) {
+                return new Date(defaultYear, 0, parseInt(cleanStr, 10));
+            }
+            let parsed = new Date(cleanStr);
+            if (isNaN(parsed.getTime()) || !/20\d\d|19\d\d/.test(cleanStr)) {
+                const updatedStr = cleanStr + " " + defaultYear;
+                const reParsed = new Date(updatedStr);
+                if (!isNaN(reParsed.getTime())) return reParsed;
+            }
+            return isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        function processData() {
+            const text = document.getElementById('pasteArea').value.trim();
+            if (!text) return;
+
+            rawEvents = [];
+            const yearInput = document.getElementById('manualYear').value.trim();
+            const fallbackYear = yearInput ? parseInt(yearInput, 10) : new Date().getFullYear();
+
+            const lines = text.split('\n');
+            lines.forEach(line => {
+                const cols = line.split('\t').map(c => c.trim());
+                if (cols.length >= 3) {
+                    const dateStr = cols[0];
+                    const holiday = cols[2];
+                    const rawLoc = cols[3] || 'Unspecified';
+                    
+                    const location = normalizeString(rawLoc); 
+                    const parsedDate = parseFlexibleDate(dateStr, fallbackYear);
+                    
+                    if (parsedDate) {
+                        rawEvents.push({
+                            date: parsedDate,
+                            holiday: holiday,
+                            location: location
+                        });
+                    }
+                }
+            });
+
+            const filter = document.getElementById('locationFilter');
+            for (let i = 0; i < filter.options.length; i++) {
+                filter.options[i].selected = true;
+            }
+
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+            
+            const select = document.getElementById('locationFilter');
+            const selectedLocs = Array.from(select.selectedOptions).map(opt => opt.value.toUpperCase());
+            const yearText = document.getElementById('manualYear').value.trim();
+            
+            let syncYear = yearText ? parseInt(yearText, 10) : new Date().getFullYear();
+            if (isNaN(syncYear)) syncYear = new Date().getFullYear();
+
+            for (let monthIdx = 0; monthIdx < 12; monthIdx++) {
+                
+                const monthEvents = rawEvents.filter(ev => {
+                    if (ev.date.getMonth() !== monthIdx) return false;
+                    const normalizedEvLoc = ev.location.toUpperCase();
+                    return selectedLocs.some(sel => normalizedEvLoc.includes(sel));
+                });
+
+                const card = document.createElement('div');
+                card.className = 'month-card';
+
+                const displayMonthName = new Date(syncYear, monthIdx, 1).toLocaleString('default', { month: 'long' });
+                card.innerHTML = `<div class="month-title">${displayMonthName} ${syncYear}</div>`;
+
+                const daysGrid = document.createElement('div');
+                daysGrid.className = 'days-grid';
+                
+                // Changed to Monday-First Week
+                ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(d => {
+                    daysGrid.innerHTML += `<div class="day-header">${d}</div>`;
+                });
+
+                // Adjusted Math for Monday-First Week (+6 % 7 shifts Sunday from 0 to 6)
+                const firstDayIndex = (new Date(syncYear, monthIdx, 1).getDay() + 6) % 7;
+                const totalDays = new Date(syncYear, monthIdx + 1, 0).getDate();
+
+                for (let i = 0; i < firstDayIndex; i++) {
+                    daysGrid.innerHTML += `<div class="day-cell empty-cell"></div>`;
+                }
+
+                const eventDayMap = {};
+                monthEvents.forEach(e => {
+                    const dayNum = e.date.getDate();
+                    if (!eventDayMap[dayNum]) eventDayMap[dayNum] = [];
+                    eventDayMap[dayNum].push(e);
+                });
+
+                for (let day = 1; day <= totalDays; day++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    cell.innerHTML = `<div class="day-num">${day}</div>`;
+                    
+                    if (eventDayMap[day]) {
+                        
+                        const dotsContainer = document.createElement('div');
+                        dotsContainer.className = 'dots-container';
+
+                        eventDayMap[day].forEach(ev => {
+                            const theme = getThemeForLocation(ev.location);
+                            
+                            // Normal Screen Label
+                            const label = document.createElement('div');
+                            label.className = 'holiday-label';
+                            label.style.backgroundColor = theme.bg;
+                            label.style.borderLeft = `3px solid ${theme.border}`;
+                            label.style.color = theme.text;
+                            label.textContent = ev.holiday;
+                            cell.appendChild(label);
+
+                            // PDF-only Color Marker Dot
+                            const printDot = document.createElement('div');
+                            printDot.className = 'holiday-dot';
+                            printDot.style.backgroundColor = theme.text;
+                            dotsContainer.appendChild(printDot);
+                        });
+                        
+                        cell.appendChild(dotsContainer);
+                    }
+                    daysGrid.appendChild(cell);
+                }
+                card.appendChild(daysGrid);
+
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = 'month-summary';
+
+                // Display summary item
+                monthEvents.sort((a, b) => a.date.getDate() - b.date.getDate()).forEach(ev => {
+                    const item = document.createElement('div');
+                    item.className = 'summary-item';
+                    const dateFmt = String(ev.date.getDate()).padStart(2, '0');
+                    const theme = getThemeForLocation(ev.location);
+                    
+                    item.innerHTML = `
+                        <div class="summary-color" style="background-color: ${theme.text}"></div>
+                        <div class="summary-date">${dateFmt}</div>
+                        <div class="summary-name" style="color: ${theme.text}">${ev.holiday}</div>
+                    `;
+                    summaryDiv.appendChild(item);
+                });
+
+                card.appendChild(summaryDiv);
+                container.appendChild(card);
+            }
+        }
+
+        initColorPickers();
+        renderCalendar();
+    </script>
+</body>
+</html>
