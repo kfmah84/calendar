@@ -3,66 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimalist Flat Calendar Generator</title>
+    <title>Calendar Generator</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
         :root {
-            --bg: #ffffff;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --black-btn: #111827;
-            --black-btn-hover: #374151;
-            --radius: 0px; 
+            --bg: #f5f5f7; 
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --border: #e5e5ea;
+            --primary: #007aff; 
+            --primary-hover: #006ce6;
+            --today-bg: #ff3b30; 
+            --radius: 10px; 
         }
         
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
-            padding: 40px;
+            padding: 32px;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
         h2 {
             font-weight: 600;
             font-size: 1.5rem;
             margin-top: 0;
-            margin-bottom: 1rem;
+            margin-bottom: 20px;
             letter-spacing: -0.02em;
         }
 
-        .no-print {
-            background: var(--bg);
+        /* Top Panel - macOS Preferences Style Layout */
+        .top-panel {
+            background: var(--card-bg);
             padding: 24px;
+            border-radius: var(--radius);
             border: 1px solid var(--border);
-            margin-bottom: 40px;
-        }
-
-        textarea {
-            width: 100%;
-            height: 120px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-            padding: 12px;
-            font-family: monospace;
-            box-sizing: border-box;
-            background: #f9fafb;
-            resize: vertical;
-            outline: none;
-        }
-
-        textarea:focus { border-color: var(--text-main); }
-
-        .controls-grid {
+            box-shadow: 0 1px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.04);
+            margin-bottom: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 220px 1fr;
+            gap: 40px;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
-            align-items: end;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .control-group {
@@ -71,104 +68,176 @@
             gap: 8px;
         }
 
-        label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        input[type="number"], select[multiple] {
-            border: 1px solid var(--border);
-            padding: 10px;
-            font-family: inherit;
-            outline: none;
-            background: var(--bg);
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        input[type="number"]:focus, select[multiple]:focus {
-            border-color: var(--text-main);
-        }
-
-        select[multiple] {
-            height: 100px; 
-        }
-
-        .color-pickers-panel {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            padding: 15px;
-            background: #f9fafb;
-            border: 1px solid var(--border);
-        }
-
-        .picker-row {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .picker-row span {
+        label.group-label {
             font-size: 0.8rem;
             font-weight: 600;
-            text-transform: uppercase;
             color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+
+        /* macOS Style Inputs */
+        input[type="number"], input[type="text"] {
+            border: 1px solid #c6c6c8;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            background: #ffffff;
+            box-sizing: border-box;
+            width: 100%;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+            transition: all 0.2s;
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2), inset 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        /* macOS Style Buttons */
+        .button-group-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .button-group-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        button {
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            letter-spacing: -0.01em;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            border: 0.5px solid transparent;
+            box-sizing: border-box;
+        }
+
+        .btn-primary { 
+            background-color: var(--primary); 
+            background-image: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%);
+            color: white; 
+            border-color: #006ae6;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .btn-primary:active { 
+            background-color: var(--primary-hover); 
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary, .btn-print { 
+            background-color: #ffffff; 
+            color: var(--text-main);
+            border-color: #c6c6c8;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.04), inset 0 -1px 0 rgba(0,0,0,0.02);
+        }
+        .btn-secondary:active, .btn-print:active { 
+            background-color: #f2f2f7; 
+        }
+
+        /* Filter & Picker Layout Grid */
+        .filter-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            align-items: center;
+            padding: 6px 12px;
+            background: #ffffff;
+            border-radius: 6px;
+        }
+        
+        .filter-row:nth-child(even) {
+            background: #f9f9fb;
+        }
+        
+        /* Special handling for 'All' row without pickers */
+        .filter-row.all-row {
+            display: block;
+            margin-bottom: 4px;
+            border: none;
+            background: transparent;
+            padding: 0 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            border-radius: 0;
+        }
+
+        .mac-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .mac-checkbox input[type="checkbox"] {
+            accent-color: var(--primary);
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            margin: 0;
         }
 
         .palette-options {
             display: flex;
-            gap: 4px;
+            gap: 6px;
+            flex-wrap: nowrap;
         }
 
+        /* Solid Color Swatches */
         .color-swatch {
-            width: 20px;
-            height: 20px;
+            width: 16px; 
+            height: 16px;
+            min-width: 16px;
+            min-height: 16px;
+            max-width: 16px;
+            max-height: 16px;
+            border-radius: 50%;
             cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            border: none;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
             position: relative;
+            transition: transform 0.1s;
         }
+        
+        .color-swatch:active { transform: scale(0.85); }
 
         .color-swatch.active::after {
-            content: '✓';
-            color: #111827;
-            font-size: 10px;
+            content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-weight: bold;
+            width: 6px;
+            height: 6px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        .button-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
+        /* Screen Only Element */
+        .print-header { display: none; }
+        .divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-        button {
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: background-color 0.2s;
-        }
-
-        .btn-generate { background-color: var(--primary); }
-        .btn-generate:hover { background-color: var(--primary-hover); }
-        
-        .btn-print { background-color: var(--black-btn); }
-        .btn-print:hover { background-color: var(--black-btn-hover); }
-
-        /* Calendar Grid Layout - 3 columns */
+        /* Calendar Grid Layout */
         .calendar-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+            gap: 30px;
         }
 
         .month-card {
@@ -176,17 +245,19 @@
             flex-direction: column;
             page-break-inside: avoid;
             break-inside: avoid;
-            overflow: visible; 
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            padding: 16px;
         }
 
         .month-title {
             font-weight: 600;
             font-size: 1.25rem;
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--text-main);
-            padding-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            color: var(--today-bg); 
+            letter-spacing: 0.02em;
         }
 
         .days-grid {
@@ -195,64 +266,64 @@
             gap: 1px;
             background: var(--border);
             border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
         }
 
         .day-header {
-            background: var(--bg);
-            font-weight: 500;
-            font-size: 0.75rem;
-            text-transform: uppercase;
+            background: var(--card-bg);
+            font-weight: 600;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            padding: 8px 0;
+            padding: 6px 0;
             text-align: center;
         }
 
         .day-cell {
-            background: var(--bg);
-            min-height: 60px;
-            padding: 6px;
+            background: var(--card-bg);
+            min-height: 65px;
+            padding: 4px;
             display: flex;
             flex-direction: column;
             position: relative;
             box-sizing: border-box;
         }
         
-        /* Highlight Today Styling */
-        .day-cell.is-today {
-            background-color: #eff6ff !important; 
-            box-shadow: inset 0 0 0 2px var(--primary); 
-        }
         .day-cell.is-today .day-num {
-            color: var(--primary);
-            font-weight: 700;
+            background-color: var(--today-bg);
+            color: white;
+            border-radius: 50%;
         }
 
         .day-num { 
-            font-size: 0.875rem; 
+            font-size: 0.85rem; 
             font-weight: 500;
-            margin-bottom: 4px;
+            margin: 2px 2px 4px auto; 
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .empty-cell { background: #f9fafb; }
+        .empty-cell { background: var(--bg); }
 
-        /* Screen Labels */
         .holiday-label {
             font-size: 0.7rem;
-            line-height: 1.2;
-            padding: 3px 4px;
+            line-height: 1.15;
+            padding: 2px 4px;
             margin-top: 2px;
+            border-radius: 4px;
             border-left: 3px solid transparent;
             word-break: break-word;
             font-weight: 500;
         }
 
-        /* Screen Dot (Hidden by default, used only in Print) */
         .dots-container { display: none; }
         .holiday-dot { display: none; }
 
         .month-summary {
-            margin-top: 12px;
-            overflow: visible; 
+            margin-top: 16px;
         }
 
         .summary-item {
@@ -260,12 +331,9 @@
             grid-template-columns: 8px 40px 1fr;
             align-items: center;
             gap: 12px;
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border);
+            padding: 4px 0;
             font-size: 0.825rem;
         }
-
-        .summary-item:last-child { border-bottom: none; }
 
         .summary-color {
             width: 8px;
@@ -276,52 +344,67 @@
         .summary-date { font-weight: 500; color: var(--text-muted); white-space: nowrap; }
         .summary-name { font-weight: 500; }
 
-        /* === PDF STRICT OPTIMIZATION (A4 Portrait, Single Page) === */
+        /* === PDF STRICT OPTIMIZATION === */
         @media print {
-            @page { 
-                size: A4 portrait; 
-                margin: 10mm; 
-            }
+            @page { size: A4 portrait; margin: 10mm; }
             .no-print { display: none !important; }
             body { padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
+            /* Medium-sized Year Header for PDF (Top Left) */
+            .print-header {
+                display: block !important;
+                font-size: 1.5rem !important;
+                font-weight: 600 !important;
+                color: #000 !important;
+                margin-bottom: 5mm !important;
+                text-align: left !important;
+                line-height: 1 !important;
+            }
+
             .calendar-container { 
                 display: grid !important; 
                 grid-template-columns: repeat(3, 1fr) !important; 
-                gap: 5mm !important; 
+                gap: 4mm !important; 
             }
             
             .month-card { 
-                height: 65mm !important; 
+                height: 62mm !important; 
                 overflow: hidden !important; 
                 margin: 0 !important;
+                padding: 4mm !important;
+                border: 1px solid #e5e5ea !important;
+                border-radius: 10px !important;
+                background: white !important;
+                box-shadow: none !important;
+                box-sizing: border-box !important;
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
             
             .month-title {
-                font-size: 0.75rem !important;
+                font-size: 0.8rem !important;
                 margin-bottom: 2px !important;
-                padding-bottom: 2px !important;
+                color: #000 !important; 
             }
             
-            /* Borderless grid for PDF */
             .days-grid { background: transparent !important; border: none !important; gap: 0 !important;}
             .day-header { font-size: 0.5rem !important; padding: 2px 0 !important; border: none !important;}
-            .day-cell { min-height: 22px !important; padding: 2px !important; border: none !important;}
+            .day-cell { min-height: 18px !important; padding: 2px !important; border: none !important;}
             .empty-cell { background: transparent !important; }
-            .day-num { font-size: 0.6rem !important; margin-bottom: 2px !important; }
-
-            .day-cell.is-today {
-                background-color: transparent !important;
-                box-shadow: none !important;
+            
+            .day-num { 
+                font-size: 0.6rem !important; 
+                margin: 0 auto 2px auto !important; 
+                width: auto !important;
+                height: auto !important;
             }
+
             .day-cell.is-today .day-num {
+                background-color: transparent !important;
                 color: #000 !important;
-                text-decoration: underline; /* Alternative subtle highlight for borderless */
+                text-decoration: underline; 
             }
             
-            /* Hide Text labels, show dot markers */
             .holiday-label { display: none !important; }
             .dots-container {
                 display: flex !important;
@@ -332,30 +415,27 @@
             }
             .holiday-dot { 
                 display: inline-block !important; 
-                width: 6px !important; 
-                height: 6px !important; 
+                width: 5px !important; 
+                height: 5px !important; 
                 border-radius: 50% !important; 
             }
-            /* Exception for Birthday Emoji Dot in Print */
             .birthday-dot {
                 background-color: transparent !important;
                 width: auto !important;
                 height: auto !important;
-                font-size: 8px !important;
+                font-size: 7px !important;
                 line-height: 1 !important;
             }
 
-            /* Tighter, smaller summary for PDF */
             .month-summary { margin-top: 1px !important; overflow: hidden !important; }
             .summary-item { 
                 padding: 0 !important; 
                 margin-bottom: 1px !important;
                 gap: 3px !important; 
-                font-size: 0.45rem !important; /* Reduced font size */
-                line-height: 1.1 !important; /* Reduced line spacing */
+                font-size: 0.45rem !important; 
+                line-height: 1.1 !important; 
                 align-items: start !important;
                 grid-template-columns: 4px 18px 1fr !important; 
-                border-bottom: none !important;
             }
             .summary-color { width: 4px !important; height: 4px !important; margin-top: 2px !important; }
         }
@@ -363,81 +443,101 @@
 </head>
 <body>
 
-    <div class="no-print">
-        <h2>Calendar Generator</h2>
-        
-        <textarea id="pasteArea" placeholder="Paste tab-separated data here..."></textarea>
-        
-        <div class="controls-grid">
+    <div class="top-panel no-print">
+        <div class="left-column">
             <div class="control-group">
-                <label for="manualYear">Display & Sync Year</label>
+                <label class="group-label" for="manualYear">Display Year</label>
                 <input type="number" id="manualYear" placeholder="e.g., 2026" value="2026" oninput="renderCalendar()">
             </div>
-
+            
             <div class="control-group">
-                <label for="locationFilter">Filter Locations (Ctrl+Click)</label>
-                <select id="locationFilter" multiple onchange="renderCalendar()">
-                    <option value="NATIONAL">National</option>
-                    <option value="KUALA LUMPUR">Kuala Lumpur</option>
-                    <option value="SELANGOR">Selangor</option>
-                    <option value="ON LEAVE">On Leave</option>
-                    <option value="BIRTHDAY">Birthday</option>
-                    <option value="SCHOOL">School</option>
-                </select>
+                <label class="group-label">Google Sheet Link</label>
+                <input type="text" id="sheetUrl" placeholder="Paste public URL here...">
+                <div class="button-group-row">
+                    <button class="btn-secondary" onclick="handlePasteLink()">Paste Link</button>
+                    <button class="btn-primary" onclick="loadFromSheet()">Load</button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="button-group-col">
+                <label class="group-label">Manual Import</label>
+                <button class="btn-secondary" onclick="handlePasteClipboard()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                    Paste Clipboard Data
+                </button>
+                <button class="btn-print" onclick="window.print()" style="margin-top: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    Export to PDF
+                </button>
             </div>
         </div>
 
-        <div class="color-pickers-panel">
-            <div class="picker-row">
-                <span>National</span>
-                <div class="palette-options" id="palette-national"></div>
-            </div>
-            <div class="picker-row">
-                <span>Kuala Lumpur</span>
-                <div class="palette-options" id="palette-kl"></div>
-            </div>
-            <div class="picker-row">
-                <span>Selangor</span>
-                <div class="palette-options" id="palette-selangor"></div>
-            </div>
-            <div class="picker-row">
-                <span>On Leave</span>
-                <div class="palette-options" id="palette-onleave"></div>
-            </div>
-            <div class="picker-row">
-                <span>Birthday</span>
-                <div class="palette-options" id="palette-birthday"></div>
-            </div>
-            <div class="picker-row">
-                <span>School</span>
-                <div class="palette-options" id="palette-school"></div>
-            </div>
-        </div>
+        <div class="right-column">
+            <div class="control-group" style="flex-grow: 1;">
+                <label class="group-label">Location Filters & Themes</label>
+                
+                <div class="filter-row all-row">
+                    <label class="mac-checkbox">
+                        <input type="checkbox" id="chkAll" checked onchange="toggleAllLocs(this.checked)"> <strong>Select All</strong>
+                    </label>
+                </div>
+                
+                <div class="filter-row">
+                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="NATIONAL" checked onchange="checkLocs()"> National</label>
+                    <div class="palette-options" id="palette-national"></div>
+                </div>
+                
+                <div class="filter-row">
+                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="KUALA LUMPUR" checked onchange="checkLocs()"> Kuala Lumpur</label>
+                    <div class="palette-options" id="palette-kl"></div>
+                </div>
 
-        <div class="button-group">
-            <button class="btn-generate" onclick="processData()">Load Data</button>
-            <button class="btn-print" onclick="window.print()">Export to PDF</button>
+                <div class="filter-row">
+                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="SELANGOR" checked onchange="checkLocs()"> Selangor</label>
+                    <div class="palette-options" id="palette-selangor"></div>
+                </div>
+
+                <div class="filter-row">
+                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="ON LEAVE" checked onchange="checkLocs()"> On Leave</label>
+                    <div class="palette-options" id="palette-onleave"></div>
+                </div>
+
+                <div class="filter-row">
+                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="BIRTHDAY" checked onchange="checkLocs()"> Birthday</label>
+                    <div class="palette-options" id="palette-birthday"></div>
+                </div>
+
+                <div class="filter-row">
+                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="SCHOOL" checked onchange="checkLocs()"> School</label>
+                    <div class="palette-options" id="palette-school"></div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <div id="printYearHeader" class="print-header">2026</div>
 
     <div class="calendar-container" id="calendarContainer"></div>
 
     <script>
         let rawEvents = [];
+        let storedPastedText = "";
         
+        // Soft Pastel Palette definitions for the calendar blocks
         const global9Palettes = [
-            { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af' }, // 0 Blue
-            { bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46' }, // 1 Green
-            { bg: '#fff7ed', border: '#ffedd5', text: '#9a3412' }, // 2 Orange
-            { bg: '#fef2f2', border: '#fecaca', text: '#991b1b' }, // 3 Red
-            { bg: '#faf5ff', border: '#e9d5ff', text: '#6b21a8' }, // 4 Purple
-            { bg: '#fdf2f8', border: '#fbcfe8', text: '#9d174d' }, // 5 Pink
-            { bg: '#fefce8', border: '#fef08a', text: '#854d0e' }, // 6 Yellow
-            { bg: '#f0fdfa', border: '#99f6e4', text: '#115e59' }, // 7 Teal
-            { bg: '#f8fafc', border: '#e2e8f0', text: '#334155' }  // 8 Slate Gray
+            { bg: '#f0f5ff', border: '#dbeafe', text: '#3b82f6' }, // 0 Soft Blue
+            { bg: '#f0fdf4', border: '#dcfce7', text: '#22c55e' }, // 1 Soft Green
+            { bg: '#fff7ed', border: '#ffedd5', text: '#f97316' }, // 2 Soft Orange
+            { bg: '#fef2f2', border: '#fecaca', text: '#ef4444' }, // 3 Soft Red
+            { bg: '#faf5ff', border: '#f3e8ff', text: '#a855f7' }, // 4 Soft Purple
+            { bg: '#fdf2f8', border: '#fce7f3', text: '#ec4899' }, // 5 Soft Pink
+            { bg: '#fefce8', border: '#fef9c3', text: '#eab308' }, // 6 Soft Yellow
+            { bg: '#f0fdfa', border: '#ccfbf1', text: '#14b8a6' }, // 7 Soft Teal
+            { bg: '#f8fafc', border: '#f1f5f9', text: '#64748b' }  // 8 Soft Slate
         ];
 
-        // Default Tracking
         let activeSelectionIndexes = {
             'NATIONAL': 0,
             'KUALA LUMPUR': 1,
@@ -447,7 +547,7 @@
             'SCHOOL': 6 
         };
 
-        const defaultUnspecifiedTheme = { bg: '#f9fafb', border: '#e5e7eb', text: '#374151' };
+        const defaultUnspecifiedTheme = { bg: '#f9fafb', border: '#e5e7eb', text: '#9ca3af' };
 
         const pickerMappings = [
             { id: 'palette-national', key: 'NATIONAL' },
@@ -457,6 +557,17 @@
             { id: 'palette-birthday', key: 'BIRTHDAY' },
             { id: 'palette-school', key: 'SCHOOL' }
         ];
+
+        function toggleAllLocs(isChecked) {
+            document.querySelectorAll('.loc-chk').forEach(chk => chk.checked = isChecked);
+            renderCalendar();
+        }
+
+        function checkLocs() {
+            const allChecked = Array.from(document.querySelectorAll('.loc-chk')).every(chk => chk.checked);
+            document.getElementById('chkAll').checked = allChecked;
+            renderCalendar();
+        }
 
         function getThemeForLocation(loc) {
             const upLoc = loc.toUpperCase();
@@ -474,16 +585,22 @@
                 global9Palettes.forEach((palette, idx) => {
                     const swatch = document.createElement('div');
                     swatch.className = 'color-swatch';
-                    swatch.style.backgroundColor = palette.bg;
-                    swatch.style.borderColor = palette.border;
+                    // Solid Color for the Picker Icon
+                    swatch.style.backgroundColor = palette.text; 
+                    
                     if (idx === activeSelectionIndexes[mapping.key]) {
                         swatch.classList.add('active');
+                        swatch.style.boxShadow = `0 0 0 2px var(--card-bg), 0 0 0 4px ${palette.text}`;
                     }
                     
                     swatch.onclick = () => {
                         activeSelectionIndexes[mapping.key] = idx;
-                        Array.from(container.children).forEach(c => c.classList.remove('active'));
+                        Array.from(container.children).forEach(c => {
+                            c.classList.remove('active');
+                            c.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.15)';
+                        });
                         swatch.classList.add('active');
+                        swatch.style.boxShadow = `0 0 0 2px var(--card-bg), 0 0 0 4px ${palette.text}`;
                         renderCalendar();
                     };
                     container.appendChild(swatch);
@@ -509,15 +626,110 @@
             return isNaN(parsed.getTime()) ? null : parsed;
         }
 
-        function processData() {
-            const text = document.getElementById('pasteArea').value.trim();
-            if (!text) return;
+        // Standard CSV Parser handling quotes and commas
+        function parseCSV(str) {
+            const arr = [];
+            let quote = false;
+            let row = 0, col = 0;
+            for (let c = 0; c < str.length; c++) {
+                let cc = str[c], nc = str[c+1];
+                arr[row] = arr[row] || [];
+                arr[row][col] = arr[row][col] || '';
+                if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
+                if (cc == '"') { quote = !quote; continue; }
+                if (cc == ',' && !quote) { ++col; continue; }
+                if (cc == '\r' && nc == '\n' && !quote) { ++row; col = 0; ++c; continue; }
+                if (cc == '\n' && !quote) { ++row; col = 0; continue; }
+                if (cc == '\r' && !quote) { ++row; col = 0; continue; }
+                arr[row][col] += cc;
+            }
+            return arr;
+        }
+
+        async function handlePasteLink() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('sheetUrl').value = text;
+            } catch (err) {
+                const fallbackText = prompt("Clipboard access restricted. Please manually paste the link:");
+                if (fallbackText) {
+                    document.getElementById('sheetUrl').value = fallbackText;
+                }
+            }
+        }
+
+        async function loadFromSheet() {
+            const urlInput = document.getElementById('sheetUrl').value.trim();
+            if (!urlInput) return alert("Please enter a Google Sheet link.");
+            
+            const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            if (!match) return alert("Invalid Google Sheet link format. Ensure it contains '/d/SPREADSHEET_ID'.");
+            
+            const sheetId = match[1];
+            // Uses the generic CSV export link for Google Sheets
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+            
+            try {
+                const response = await fetch(csvUrl);
+                if (!response.ok) throw new Error("Ensure the sheet is set to 'Anyone with the link can view'.");
+                const csvText = await response.text();
+                
+                rawEvents = [];
+                const yearInput = document.getElementById('manualYear').value.trim();
+                const fallbackYear = yearInput ? parseInt(yearInput, 10) : new Date().getFullYear();
+
+                const rows = parseCSV(csvText);
+                rows.forEach(cols => {
+                    if (cols.length >= 3) {
+                        const dateStr = cols[0] ? cols[0].trim() : '';
+                        const holiday = cols[2] ? cols[2].trim() : '';
+                        const rawLoc = cols[3] ? cols[3].trim() : 'Unspecified';
+                        
+                        if (dateStr && holiday) {
+                            const location = normalizeString(rawLoc); 
+                            const parsedDate = parseFlexibleDate(dateStr, fallbackYear);
+                            if (parsedDate) {
+                                rawEvents.push({
+                                    date: parsedDate,
+                                    holiday: holiday,
+                                    location: location
+                                });
+                            }
+                        }
+                    }
+                });
+                renderCalendar();
+            } catch (err) {
+                alert("Failed to load sheet: " + err.message);
+            }
+        }
+
+        async function handlePasteClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    storedPastedText = text;
+                    processClipboardData();
+                } else {
+                    alert("Clipboard is empty.");
+                }
+            } catch (err) {
+                const fallbackText = prompt("Clipboard access restricted. Please paste your data directly here:");
+                if (fallbackText) {
+                    storedPastedText = fallbackText;
+                    processClipboardData();
+                }
+            }
+        }
+
+        function processClipboardData() {
+            if (!storedPastedText) return;
 
             rawEvents = [];
             const yearInput = document.getElementById('manualYear').value.trim();
             const fallbackYear = yearInput ? parseInt(yearInput, 10) : new Date().getFullYear();
 
-            const lines = text.split('\n');
+            const lines = storedPastedText.split('\n');
             lines.forEach(line => {
                 const cols = line.split('\t').map(c => c.trim());
                 if (cols.length >= 3) {
@@ -538,11 +750,6 @@
                 }
             });
 
-            const filter = document.getElementById('locationFilter');
-            for (let i = 0; i < filter.options.length; i++) {
-                filter.options[i].selected = true;
-            }
-
             renderCalendar();
         }
 
@@ -550,12 +757,16 @@
             const container = document.getElementById('calendarContainer');
             container.innerHTML = '';
             
-            const select = document.getElementById('locationFilter');
-            const selectedLocs = Array.from(select.selectedOptions).map(opt => opt.value.toUpperCase());
+            const checkedBoxes = Array.from(document.querySelectorAll('.loc-chk:checked'));
+            const selectedLocs = checkedBoxes.map(chk => chk.value.toUpperCase());
             const yearText = document.getElementById('manualYear').value.trim();
             
             let syncYear = yearText ? parseInt(yearText, 10) : new Date().getFullYear();
             if (isNaN(syncYear)) syncYear = new Date().getFullYear();
+
+            // Set PDF Header
+            const printHeader = document.getElementById('printYearHeader');
+            if (printHeader) printHeader.textContent = syncYear;
 
             const realToday = new Date();
             const isCurrentYear = syncYear === realToday.getFullYear();
@@ -574,7 +785,7 @@
                 card.className = 'month-card';
 
                 const displayMonthName = new Date(syncYear, monthIdx, 1).toLocaleString('default', { month: 'long' });
-                card.innerHTML = `<div class="month-title">${displayMonthName} ${syncYear}</div>`;
+                card.innerHTML = `<div class="month-title">${displayMonthName}</div>`;
 
                 const daysGrid = document.createElement('div');
                 daysGrid.className = 'days-grid';
@@ -616,16 +827,14 @@
                             const theme = getThemeForLocation(ev.location);
                             const isBirthday = ev.location.toUpperCase().includes('BIRTHDAY');
                             
-                            // Normal Screen Label
                             const label = document.createElement('div');
                             label.className = 'holiday-label';
                             label.style.backgroundColor = theme.bg;
-                            label.style.borderLeft = `3px solid ${theme.border}`;
+                            label.style.borderLeft = `3px solid ${theme.text}`;
                             label.style.color = theme.text;
                             label.textContent = isBirthday ? `🎂 ${ev.holiday}` : ev.holiday;
                             cell.appendChild(label);
 
-                            // PDF-only Color Marker / Emoji Dot
                             const printDot = document.createElement('div');
                             printDot.className = isBirthday ? 'holiday-dot birthday-dot' : 'holiday-dot';
                             if (isBirthday) {
@@ -696,7 +905,7 @@
         }
 
         initColorPickers();
-        renderCalendar();
+        renderCalendar(); 
     </script>
 </body>
 </html>
