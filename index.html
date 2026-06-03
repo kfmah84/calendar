@@ -31,22 +31,18 @@
 
         h2 { font-weight: 600; font-size: 1.5rem; margin-top: 0; margin-bottom: 20px; letter-spacing: -0.02em; }
 
-        .top-panel {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 8px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.04);
+        .top-form-container {
             margin-bottom: 30px;
             display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 40px;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            width: 100%;
         }
 
-        .left-column { display: flex; flex-direction: column; gap: 20px; }
-        .right-column { display: flex; flex-direction: column; gap: 16px; }
-        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .action-toolbar-left { display: flex; align-items: center; gap: 8px; justify-content: flex-start; }
+        .action-toolbar { display: flex; align-items: center; gap: 8px; position: relative; justify-content: flex-end; }
 
+        .control-group { display: flex; flex-direction: column; gap: 8px; position: relative; }
         label.group-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
 
         input[type="text"], input[type="date"], input[type="month"], input[type="number"], select {
@@ -56,8 +52,13 @@
         }
         input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2), inset 0 1px 2px rgba(0,0,0,0.03); }
 
-        .button-group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .button-group-col { display: flex; flex-direction: column; gap: 8px; }
+        .input-password-wrapper { position: relative; display: flex; align-items: center; }
+        .input-password-wrapper input { padding-right: 36px; }
+        .password-toggle-btn {
+            position: absolute; right: 8px; background: transparent; border: none; padding: 0;
+            width: 24px; height: 24px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+        .password-toggle-btn:hover { color: var(--text-main); }
 
         button {
             border-radius: 6px; padding: 6px 12px; cursor: pointer; font-weight: 500; font-size: 13px;
@@ -71,19 +72,40 @@
         }
         .btn-primary:active { background-color: var(--primary-hover); box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
 
-        .btn-secondary, .btn-print, .btn-back { 
+        .btn-secondary { 
             background-color: #ffffff; color: var(--text-main); border-color: #c6c6c8; box-shadow: 0 1px 1px rgba(0,0,0,0.04), inset 0 -1px 0 rgba(0,0,0,0.02);
         }
-        .btn-secondary:active, .btn-print:active, .btn-back:active { background-color: #f2f2f7; }
+        .btn-secondary:active { background-color: #f2f2f7; }
+
+        .btn-icon-only {
+            background-color: #ffffff; color: var(--text-main); border: 1px solid #c6c6c8;
+            border-radius: 6px; width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+        }
+        .btn-icon-only:active { background-color: #f2f2f7; }
         
         .btn-back { width: auto; border-radius: 20px; padding: 6px 16px; margin-bottom: 20px; font-size: 14px; }
+        .btn-sync { width: auto; padding: 6px 14px; }
 
-        .filter-row { display: grid; grid-template-columns: 140px 1fr; align-items: center; padding: 6px 12px; background: #ffffff; border-radius: 6px; }
-        .filter-row:nth-child(even) { background: #f9f9fb; }
-        .filter-row.all-row { display: block; margin-bottom: 4px; border: none; background: transparent; padding: 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; border-radius: 0; }
+        .dropdown-menu-container { position: relative; display: inline-block; }
+        .dropdown-trigger-btn { width: auto; padding: 6px 14px; background-color: #ffffff; border: 1px solid #c6c6c8; color: var(--text-main); box-shadow: 0 1px 1px rgba(0,0,0,0.04); font-weight: 500; }
+        .dropdown-trigger-btn:active { background-color: #f2f2f7; }
+        
+        .dropdown-content-panel {
+            display: none; position: absolute; left: 0; top: calc(100% + 6px); background-color: #ffffff;
+            min-width: 240px; box-shadow: 0 4px 12px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border); border-radius: 8px; padding: 8px; z-index: 200;
+        }
+        .dropdown-content-panel.show { display: block; }
+        
+        .filter-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; transition: background-color 0.1s; }
+        .filter-row:hover { background-color: #f5f5f7; }
+        .filter-row.all-row { border-bottom: 1px solid var(--border); border-radius: 0; padding-bottom: 8px; margin-bottom: 4px; }
+        
+        .filter-label-wrapper { display: flex; align-items: center; gap: 8px; flex-grow: 1; }
 
-        .mac-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
-        .mac-checkbox input[type="checkbox"] { accent-color: var(--primary); width: 14px; height: 14px; cursor: pointer; margin: 0; }
+        .mac-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+        .mac-checkbox input[type="checkbox"] { accent-color: var(--primary); width: 14px; height: 14px; margin: 0; }
 
         .palette-options { display: flex; gap: 6px; flex-wrap: nowrap; }
         .color-swatch {
@@ -95,75 +117,46 @@
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 6px; height: 6px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
+        
+        .dropdown-color-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: inset 0 1px 1px rgba(0,0,0,0.1); }
 
         .print-header { display: none; }
         .divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-        /* --- Centered Navigation (Year / Month) --- */
-        .nav-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
+        .tabs-nav-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; gap: 4px; }
+        .tab-nav-btn {
+            background: transparent; border: none; padding: 6px 12px; font-size: 13px; font-weight: 500;
+            color: var(--text-muted); border-radius: 6px 6px 0 0; border-bottom: 2px solid transparent; width: auto;
         }
+        .tab-nav-btn:hover { color: var(--text-main); background-color: #f5f5f7; }
+        .tab-nav-btn.active-tab { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+        .tab-content-pane { display: none; flex-direction: column; gap: 14px; }
+        .tab-content-pane.active-pane { display: flex; }
         
-        .nav-group {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .theme-config-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid var(--bg); }
+        .theme-config-row span { font-size: 13px; font-weight: 500; }
 
+        .nav-container { display: flex; justify-content: center; align-items: center; }
+        .nav-group { display: flex; align-items: center; gap: 8px; }
+        
         .nav-input {
-            font-family: inherit;
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            color: var(--text-main);
-            background: transparent;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            outline: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            padding: 4px 0;
+            font-family: inherit; font-size: 2.7rem; font-weight: 700; text-align: center; color: var(--text-main);
+            background: transparent; border: 2px solid transparent; border-radius: 12px; outline: none; transition: all 0.2s; cursor: pointer; padding: 4px 0;
         }
-        input[type="number"].nav-input {
-            width: 160px;
-            -moz-appearance: textfield;
-        }
+        input[type="number"].nav-input { width: 160px; -moz-appearance: textfield; }
         input[type="number"].nav-input::-webkit-outer-spin-button,
         input[type="number"].nav-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
-        input[type="month"].nav-input {
-            width: 340px; 
-        }
-
-        .nav-input:hover, .nav-input:focus {
-            background: var(--card-bg);
-            border-color: #c6c6c8;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            cursor: text;
-        }
+        input[type="month"].nav-input { width: 340px; }
+        .nav-input:hover, .nav-input:focus { background: var(--card-bg); border-color: #c6c6c8; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: text; }
 
         .nav-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.2s;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; color: var(--text-muted);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s;
         }
         .nav-btn:hover { background: #f2f2f7; color: var(--text-main); transform: scale(1.05); }
         .nav-btn:active { transform: scale(0.95); }
 
-        /* Calendar Grid Layout */
         #viewHeader { display: none; }
         .calendar-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; transition: all 0.3s ease; }
         
@@ -173,16 +166,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 16px; transition: transform 0.15s, box-shadow 0.15s;
         }
 
-        /* --- Full Height adjustments for Single View --- */
-        .calendar-container.single-view .month-card {
-            min-height: calc(100vh - 160px); 
-        }
-        .calendar-container.single-view .days-grid {
-            flex-grow: 1; 
-        }
-        .calendar-container.single-view .day-cell {
-            min-height: 100px;
-        }
+        .calendar-container.single-view .month-card { min-height: calc(100vh - 160px); }
+        .calendar-container.single-view .days-grid { flex-grow: 1; }
+        .calendar-container.single-view .day-cell { min-height: 100px; }
         
         .calendar-container.grid-view .month-card { cursor: pointer; }
         .calendar-container.grid-view .month-card:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
@@ -194,18 +180,19 @@
         .day-cell.is-today .day-num { background-color: var(--today-bg); color: white; border-radius: 50%; }
         .day-num { font-size: 0.85rem; font-weight: 500; margin: 2px 2px 4px auto; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
         .empty-cell { background: var(--bg); }
-        .holiday-label { font-size: 0.7rem; line-height: 1.15; padding: 2px 4px; margin-top: 2px; border-radius: 4px; border-left: 3px solid transparent; word-break: break-word; font-weight: 500; }
+        .holiday-label { font-size: 0.7rem; line-height: 1.15; padding: 2px 4px; margin-top: 2px; border-radius: 4px; border-left: 3px solid transparent; word-break: break-word; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+        .holiday-label:hover { opacity: 0.7; text-decoration: line-through; }
 
         .dots-container { display: none; }
         .holiday-dot { display: none; }
 
         .month-summary { margin-top: 16px; }
-        .summary-item { display: grid; grid-template-columns: 8px 40px 1fr; align-items: center; gap: 12px; padding: 4px 0; font-size: 0.825rem; }
+        .summary-item { display: grid; grid-template-columns: 8px 40px 1fr; align-items: center; gap: 12px; padding: 4px 0; font-size: 0.825rem; cursor: pointer; }
+        .summary-item:hover .summary-name { text-decoration: line-through; }
         .summary-color { width: 8px; height: 8px; border-radius: 50%; }
         .summary-date { font-weight: 500; color: var(--text-muted); white-space: nowrap; }
         .summary-name { font-weight: 500; }
 
-        /* Floating Action Button (FAB) */
         .fab {
             position: fixed; bottom: 40px; right: 40px; width: 56px; height: 56px; border-radius: 50%;
             background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(0,122,255,0.4);
@@ -214,23 +201,116 @@
         }
         .fab:hover { transform: scale(1.05); background: var(--primary-hover); }
 
-        /* Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);
             display: none; justify-content: center; align-items: center; z-index: 1000;
             backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
         }
         .modal-content {
-            background: var(--card-bg); width: 340px; padding: 24px; border-radius: 14px;
+            background: var(--card-bg); width: 360px; padding: 24px; border-radius: 14px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 16px;
         }
+        .modal-content.settings-box { width: 440px; }
         .modal-content h3 { margin: 0 0 8px 0; font-size: 1.2rem; }
         .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
 
-        /* === PDF STRICT OPTIMIZATION === */
+        /* ── NEW CATEGORY CREATION PANEL ── */
+        .new-category-panel {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background: #f5f5f7;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            animation: slideDown 0.18s ease;
+        }
+        .new-category-panel.visible { display: flex; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .new-category-panel .panel-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .new-category-color-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .new-category-color-row label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .new-cat-swatches {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .new-cat-swatch {
+            width: 18px; height: 18px; border-radius: 50%; cursor: pointer;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+            border: none; position: relative; transition: transform 0.1s;
+            flex-shrink: 0;
+        }
+        .new-cat-swatch:active { transform: scale(0.85); }
+        .new-cat-swatch.active::after {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 7px; height: 7px; background: #fff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .new-category-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .btn-create-cat {
+            background: var(--primary);
+            background-image: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%);
+            color: white; border-color: #006ae6;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15);
+            font-size: 12px; padding: 5px 10px;
+        }
+        .btn-cancel-cat {
+            background: #fff; color: var(--text-muted); border-color: #c6c6c8;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.04); font-size: 12px; padding: 5px 10px;
+        }
+
+        /* Category select wrapper */
+        .category-select-wrapper {
+            position: relative;
+        }
+        .category-select-wrapper select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 28px;
+            cursor: pointer;
+        }
+        .category-select-wrapper::after {
+            content: '▾';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ── END NEW CATEGORY ── */
+
         @media print {
             @page { size: A4 portrait; margin: 5mm; }
-            .no-print, .fab, .modal-overlay, #viewHeader, .nav-container { display: none !important; }
+            .no-print, .fab, .modal-overlay, #viewHeader, .top-form-container { display: none !important; }
             body { padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
             .print-header {
@@ -241,7 +321,7 @@
             .calendar-container { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4mm !important; }
             
             .month-card { 
-                height: 64mm !important; overflow: hidden !important; margin: 0 !important; padding: 2mm !important;
+                height: 65mm !important; overflow: hidden !important; margin: 0 !important; padding: 2mm !important;
                 border: 1px solid #e5e5ea !important; border-radius: 10px !important; background: white !important;
                 box-shadow: none !important; box-sizing: border-box !important; page-break-inside: avoid; break-inside: avoid;
             }
@@ -272,87 +352,50 @@
 </head>
 <body>
 
-    <div class="top-panel no-print" id="topPanel">
-        <div class="left-column">
+    <div class="top-form-container no-print" id="topPanel">
+        <div class="action-toolbar-left">
+            <div class="dropdown-menu-container">
+                <button class="dropdown-trigger-btn" onclick="toggleFilterDropdown(event)">
+                    Filter Category ▾
+                </button>
+                <div id="filterDropdownMenu" class="dropdown-content-panel">
+                    <div class="filter-row all-row">
+                        <label class="mac-checkbox">
+                            <input type="checkbox" id="chkAll" checked onchange="toggleAllLocs(this.checked)"> <strong>Select All</strong>
+                        </label>
+                    </div>
+                    <div id="dropdownRowsPlaceholder"></div>
+                </div>
+            </div>
+
+            <button class="btn-secondary btn-sync" onclick="loadFromSheet()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                Sync
+            </button>
+        </div>
+
+        <div class="nav-container">
+            <div id="yearNav" class="nav-group">
+                <button class="nav-btn" onclick="changeYear(-1)">❮</button>
+                <input type="number" id="manualYear" class="nav-input" placeholder="2026" value="2026" oninput="renderCalendar()">
+                <button class="nav-btn" onclick="changeYear(1)">❯</button>
+            </div>
             
-            <div class="control-group">
-                <label class="group-label">Google Sheet Link (For Loading)</label>
-                <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/..." onchange="saveState()">
-                <div class="button-group-row">
-                    <button class="btn-secondary" onclick="handlePasteLink('sheetUrl')">Paste Link</button>
-                    <button class="btn-primary" onclick="loadFromSheet()">Load Data</button>
-                </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="button-group-col">
-                <label class="group-label">Manual Import</label>
-                <button class="btn-secondary" onclick="handlePasteClipboard()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                    Paste Clipboard Data
-                </button>
-                <button class="btn-print" onclick="window.print()" style="margin-top: 6px;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                    Export to PDF
-                </button>
+            <div id="monthNav" class="nav-group" style="display: none;">
+                <button class="nav-btn" onclick="changeMonth(-1)">❮</button>
+                <input type="month" id="manualMonth" class="nav-input" onchange="handleMonthPick()">
+                <button class="nav-btn" onclick="changeMonth(1)">❯</button>
             </div>
         </div>
 
-        <div class="right-column">
-            <div class="control-group" style="flex-grow: 1;">
-                <label class="group-label">Location Filters & Themes</label>
-                
-                <div class="filter-row all-row">
-                    <label class="mac-checkbox">
-                        <input type="checkbox" id="chkAll" checked onchange="toggleAllLocs(this.checked)"> <strong>Select All</strong>
-                    </label>
-                </div>
-                
-                <div class="filter-row">
-                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="NATIONAL" checked onchange="checkLocs()"> National</label>
-                    <div class="palette-options" id="palette-national"></div>
-                </div>
-                
-                <div class="filter-row">
-                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="KUALA LUMPUR" checked onchange="checkLocs()"> Kuala Lumpur</label>
-                    <div class="palette-options" id="palette-kl"></div>
-                </div>
-
-                <div class="filter-row">
-                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="SELANGOR" checked onchange="checkLocs()"> Selangor</label>
-                    <div class="palette-options" id="palette-selangor"></div>
-                </div>
-
-                <div class="filter-row">
-                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="ON LEAVE" checked onchange="checkLocs()"> On Leave</label>
-                    <div class="palette-options" id="palette-onleave"></div>
-                </div>
-
-                <div class="filter-row">
-                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="BIRTHDAY" checked onchange="checkLocs()"> Birthday</label>
-                    <div class="palette-options" id="palette-birthday"></div>
-                </div>
-
-                <div class="filter-row">
-                    <label class="mac-checkbox"><input type="checkbox" class="loc-chk" value="SCHOOL" checked onchange="checkLocs()"> School</label>
-                    <div class="palette-options" id="palette-school"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="nav-container no-print">
-        <div id="yearNav" class="nav-group">
-            <button class="nav-btn" onclick="changeYear(-1)">❮</button>
-            <input type="number" id="manualYear" class="nav-input" placeholder="2026" value="2026" oninput="renderCalendar()">
-            <button class="nav-btn" onclick="changeYear(1)">❯</button>
-        </div>
-        
-        <div id="monthNav" class="nav-group" style="display: none;">
-            <button class="nav-btn" onclick="changeMonth(-1)">❮</button>
-            <input type="month" id="manualMonth" class="nav-input" onchange="handleMonthPick()">
-            <button class="nav-btn" onclick="changeMonth(1)">❯</button>
+        <div class="action-toolbar">
+            <button class="btn-icon-only" onclick="openSettingsModal()" title="Settings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+            
+            <button class="btn-icon-only" onclick="window.print()" title="Export to PDF">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            </button>
         </div>
     </div>
 
@@ -371,6 +414,48 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
     </button>
 
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-content settings-box">
+            <h3>Settings</h3>
+            
+            <div class="tabs-nav-bar">
+                <button id="navTabIntegration" class="tab-nav-btn active-tab" onclick="switchSettingsTab('Integration')">Integration</button>
+                <button id="navTabThemes" class="tab-nav-btn" onclick="switchSettingsTab('Themes')">Themes</button>
+            </div>
+
+            <div id="paneIntegration" class="tab-content-pane active-pane">
+                <div class="control-group">
+                    <label class="group-label">Google Sheet Link</label>
+                    <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/..." onchange="saveState()">
+                </div>
+                <div class="control-group">
+                    <label class="group-label">Web App URL (for Syncing)</label>
+                    <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/..." onchange="saveState()">
+                </div>
+                <div class="control-group">
+                    <label class="group-label">API Secret Key</label>
+                    <div class="input-password-wrapper">
+                        <input type="password" id="apiKeyInput" placeholder="Enter private token secret" onchange="saveState()">
+                        <button type="button" class="password-toggle-btn" onclick="toggleApiKeyVisibility()">
+                            <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="paneThemes" class="tab-content-pane">
+                <div id="themesListContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
+
+            <div class="divider" style="margin-top: 12px;"></div>
+            <div class="modal-actions" style="grid-template-columns: 1fr;">
+                <button class="btn-primary" onclick="closeSettingsModal()">Save & Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD EVENT MODAL -->
     <div id="eventModal" class="modal-overlay">
         <div class="modal-content">
             <h3>Add New Event</h3>
@@ -386,24 +471,34 @@
                 <label class="group-label">Event</label>
                 <input type="text" id="newEventName" placeholder="Event name">
             </div>
+
+            <!-- CATEGORY FIELD (now a select + new category option) -->
             <div class="control-group">
-                <label class="group-label">Location</label>
-                <select id="newEventLocation">
-                    <option value="NATIONAL">National</option>
-                    <option value="KUALA LUMPUR">Kuala Lumpur</option>
-                    <option value="SELANGOR">Selangor</option>
-                    <option value="ON LEAVE">On Leave</option>
-                    <option value="BIRTHDAY">Birthday</option>
-                    <option value="SCHOOL">School</option>
-                </select>
+                <label class="group-label">Category</label>
+                <div class="category-select-wrapper">
+                    <select id="newEventCategorySelect" onchange="handleCategorySelectChange()">
+                        <!-- populated dynamically -->
+                    </select>
+                </div>
             </div>
-            
-            <div class="divider"></div>
-            
-            <div class="control-group">
-                <label class="group-label" style="color: var(--primary);">Web App URL (For Saving)</label>
-                <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/..." onchange="saveState()">
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">This links to your Apps Script doPost() trigger.</div>
+
+            <!-- NEW CATEGORY CREATION PANEL (hidden by default) -->
+            <div id="newCategoryPanel" class="new-category-panel">
+                <div class="panel-label">New Category</div>
+                <div class="control-group" style="gap: 6px;">
+                    <input type="text" id="newCategoryName" placeholder="Category name (e.g. EVENTS)" style="text-transform: uppercase;">
+                </div>
+                <div class="new-category-color-row">
+                    <label>Color</label>
+                    <div class="new-cat-swatches" id="newCatSwatches"></div>
+                </div>
+                <div class="new-category-actions">
+                    <button class="btn-create-cat" onclick="confirmNewCategory()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Create
+                    </button>
+                    <button class="btn-cancel-cat" onclick="cancelNewCategory()">Cancel</button>
+                </div>
             </div>
 
             <div class="modal-actions">
@@ -416,6 +511,7 @@
     <script>
         let rawEvents = [];
         let singleMonthView = null;
+        let dynamicCategoriesList = ['NATIONAL', 'KUALA LUMPUR', 'SELANGOR', 'ON LEAVE', 'BIRTHDAY', 'SCHOOL'];
         
         const global9Palettes = [
             { bg: '#f0f5ff', border: '#dbeafe', text: '#3b82f6' }, 
@@ -431,28 +527,123 @@
 
         let activeSelectionIndexes = { 'NATIONAL': 0, 'KUALA LUMPUR': 1, 'SELANGOR': 2, 'ON LEAVE': 3, 'BIRTHDAY': 5, 'SCHOOL': 6 };
         const defaultUnspecifiedTheme = { bg: '#f9fafb', border: '#e5e7eb', text: '#9ca3af' };
-        const pickerMappings = [
-            { id: 'palette-national', key: 'NATIONAL' }, { id: 'palette-kl', key: 'KUALA LUMPUR' },
-            { id: 'palette-selangor', key: 'SELANGOR' }, { id: 'palette-onleave', key: 'ON LEAVE' },
-            { id: 'palette-birthday', key: 'BIRTHDAY' }, { id: 'palette-school', key: 'SCHOOL' }
-        ];
 
-        // --- LOCAL STORAGE MANAGER ---
+        // Tracks which palette index is selected in the new-category creation panel
+        let newCatSelectedPaletteIdx = 0;
+
+        // ── NEW CATEGORY PANEL HELPERS ──────────────────────────────────────
+
+        function buildNewCatSwatches() {
+            const container = document.getElementById('newCatSwatches');
+            container.innerHTML = '';
+            newCatSelectedPaletteIdx = 0;
+            global9Palettes.forEach((palette, idx) => {
+                const sw = document.createElement('div');
+                sw.className = 'new-cat-swatch' + (idx === 0 ? ' active' : '');
+                sw.style.backgroundColor = palette.text;
+                if (idx === 0) sw.style.boxShadow = `0 0 0 2px #fff, 0 0 0 3px ${palette.text}`;
+                sw.onclick = () => {
+                    newCatSelectedPaletteIdx = idx;
+                    Array.from(container.children).forEach((s, i) => {
+                        s.classList.toggle('active', i === idx);
+                        s.style.boxShadow = i === idx
+                            ? `0 0 0 2px #fff, 0 0 0 3px ${global9Palettes[i].text}`
+                            : 'inset 0 1px 2px rgba(0,0,0,0.15)';
+                    });
+                };
+                container.appendChild(sw);
+            });
+        }
+
+        function handleCategorySelectChange() {
+            const sel = document.getElementById('newEventCategorySelect');
+            const panel = document.getElementById('newCategoryPanel');
+            if (sel.value === '__new__') {
+                panel.classList.add('visible');
+                document.getElementById('newCategoryName').focus();
+            } else {
+                panel.classList.remove('visible');
+            }
+        }
+
+        function confirmNewCategory() {
+            const nameInput = document.getElementById('newCategoryName');
+            const raw = nameInput.value.trim().toUpperCase();
+            if (!raw) { nameInput.focus(); return; }
+
+            if (!dynamicCategoriesList.includes(raw)) {
+                dynamicCategoriesList.push(raw);
+                activeSelectionIndexes[raw] = newCatSelectedPaletteIdx;
+                buildCategoryDropdownUI();
+                populateModalCategorySelect();
+                initColorPickersInSettings();
+                updateDropdownIndicators();
+            }
+
+            // Switch the select to the newly created category
+            const sel = document.getElementById('newEventCategorySelect');
+            sel.value = raw;
+
+            // Hide panel and clear inputs
+            document.getElementById('newCategoryPanel').classList.remove('visible');
+            nameInput.value = '';
+        }
+
+        function cancelNewCategory() {
+            const sel = document.getElementById('newEventCategorySelect');
+            // Revert to first real category if available
+            if (dynamicCategoriesList.length > 0) {
+                sel.value = dynamicCategoriesList[0];
+            }
+            document.getElementById('newCategoryPanel').classList.remove('visible');
+            document.getElementById('newCategoryName').value = '';
+        }
+
+        // ── POPULATE MODAL CATEGORY SELECT ──────────────────────────────────
+
+        function populateModalCategorySelect() {
+            const sel = document.getElementById('newEventCategorySelect');
+            const currentVal = sel.value;
+            sel.innerHTML = '';
+
+            dynamicCategoriesList.forEach(catKey => {
+                const opt = document.createElement('option');
+                opt.value = catKey;
+                opt.textContent = catKey.charAt(0) + catKey.slice(1).toLowerCase();
+                sel.appendChild(opt);
+            });
+
+            // "＋ New category" option at the bottom
+            const newOpt = document.createElement('option');
+            newOpt.value = '__new__';
+            newOpt.textContent = '＋ New category…';
+            sel.appendChild(newOpt);
+
+            // Restore previously selected value if it still exists
+            if (currentVal && currentVal !== '__new__' && dynamicCategoriesList.includes(currentVal)) {
+                sel.value = currentVal;
+            }
+        }
+
+        // ── LOCAL STORAGE MANAGER ────────────────────────────────────────────
+
         function saveState() {
             const state = {
                 manualYear: document.getElementById('manualYear').value,
                 rawEvents: rawEvents.map(e => ({...e, date: e.date.toISOString()})),
                 activeSelectionIndexes: activeSelectionIndexes,
                 singleMonthView: singleMonthView,
-                filters: Array.from(document.querySelectorAll('.loc-chk')).map(chk => ({ value: chk.value, checked: chk.checked })),
+                dynamicCategoriesList: dynamicCategoriesList,
+                filters: Array.from(document.querySelectorAll('.category-chk')).map(chk => ({ value: chk.value, checked: chk.checked })),
                 sheetUrl: document.getElementById('sheetUrl').value,
-                webAppUrl: document.getElementById('webAppUrl').value
+                webAppUrl: document.getElementById('webAppUrl').value,
+                apiKey: document.getElementById('apiKeyInput').value
             };
-            localStorage.setItem('calendarGenState', JSON.stringify(state));
+            localStorage.setItem('calendarGenState_v4', JSON.stringify(state));
         }
 
         function loadState() {
-            const saved = localStorage.getItem('calendarGenState');
+            const saved = localStorage.getItem('calendarGenState_v4');
             if (saved) {
                 try {
                     const state = JSON.parse(saved);
@@ -460,26 +651,96 @@
                     if(state.rawEvents) rawEvents = state.rawEvents.map(e => ({...e, date: new Date(e.date)}));
                     if(state.activeSelectionIndexes) activeSelectionIndexes = state.activeSelectionIndexes;
                     if(state.singleMonthView !== undefined) singleMonthView = state.singleMonthView;
+                    if(state.dynamicCategoriesList) dynamicCategoriesList = state.dynamicCategoriesList;
                     if(state.sheetUrl) document.getElementById('sheetUrl').value = state.sheetUrl;
                     if(state.webAppUrl) document.getElementById('webAppUrl').value = state.webAppUrl;
+                    if(state.apiKey) document.getElementById('apiKeyInput').value = state.apiKey;
                     
                     if(state.filters) {
                         state.filters.forEach(f => {
-                            const chk = document.querySelector(`.loc-chk[value="${f.value}"]`);
+                            const chk = document.querySelector(`.category-chk[value="${f.value}"]`);
                             if(chk) chk.checked = f.checked;
                         });
-                        const allChecked = Array.from(document.querySelectorAll('.loc-chk')).every(chk => chk.checked);
+                        const allChecked = Array.from(document.querySelectorAll('.category-chk')).every(chk => chk.checked);
                         document.getElementById('chkAll').checked = allChecked;
                     }
                 } catch(e) { console.error("Error loading state", e); }
             }
-            initColorPickers();
+            buildCategoryDropdownUI();
+            populateModalCategorySelect();
+            buildNewCatSwatches();
+            initColorPickersInSettings();
+            updateDropdownIndicators();
             renderCalendar();
         }
 
         document.addEventListener('DOMContentLoaded', loadState);
 
-        // --- CORE UI ACTIONS ---
+        // ── FILTER DROPDOWN ──────────────────────────────────────────────────
+
+        function buildCategoryDropdownUI() {
+            const container = document.getElementById('dropdownRowsPlaceholder');
+            container.innerHTML = '';
+            dynamicCategoriesList.forEach(catKey => {
+                const labelText = catKey.charAt(0) + catKey.slice(1).toLowerCase();
+                const row = document.createElement('div');
+                row.className = 'filter-row';
+                row.innerHTML = `
+                    <div class="filter-label-wrapper">
+                        <label class="mac-checkbox">
+                            <input type="checkbox" class="category-chk" value="${catKey}" checked onchange="checkCategoryFilters()"> ${labelText}
+                        </label>
+                    </div>
+                    <div class="dropdown-color-indicator" id="ind-${catKey}"></div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function updateDropdownIndicators() {
+            dynamicCategoriesList.forEach(catKey => {
+                const indicator = document.getElementById(`ind-${catKey}`);
+                if (indicator) {
+                    const themeIdx = activeSelectionIndexes[catKey] !== undefined ? activeSelectionIndexes[catKey] : 8;
+                    const theme = global9Palettes[themeIdx];
+                    indicator.style.backgroundColor = theme ? theme.text : '#9ca3af';
+                }
+            });
+        }
+
+        function toggleFilterDropdown(e) {
+            e.stopPropagation();
+            document.getElementById('filterDropdownMenu').classList.toggle('show');
+        }
+
+        document.addEventListener('click', () => {
+            document.getElementById('filterDropdownMenu').classList.remove('show');
+        });
+        document.getElementById('filterDropdownMenu').addEventListener('click', (e) => e.stopPropagation());
+
+        // ── SETTINGS MODAL TABS ──────────────────────────────────────────────
+
+        function switchSettingsTab(tabName) {
+            document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active-tab'));
+            document.querySelectorAll('.tab-content-pane').forEach(p => p.classList.remove('active-pane'));
+            document.getElementById(`navTab${tabName}`).classList.add('active-tab');
+            document.getElementById(`pane${tabName}`).classList.add('active-pane');
+        }
+
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+            } else {
+                input.type = 'password';
+                icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+            }
+        }
+
+        // ── NAVIGATION ───────────────────────────────────────────────────────
+
         function changeYear(delta) {
             const el = document.getElementById('manualYear');
             let val = parseInt(el.value, 10) || new Date().getFullYear();
@@ -487,13 +748,26 @@
             renderCalendar();
         }
 
+        function updateLayoutStateNavbar(viewMode) {
+            const topPanel = document.getElementById('topPanel');
+            const yearNav = document.getElementById('yearNav');
+            const monthNav = document.getElementById('monthNav');
+            if (viewMode === 'single') {
+                topPanel.style.display = 'none';
+                yearNav.style.display = 'none';
+                monthNav.style.display = 'flex';
+            } else {
+                topPanel.style.display = 'grid';
+                yearNav.style.display = 'flex';
+                monthNav.style.display = 'none';
+            }
+        }
+
         function changeMonth(delta) {
             let y = parseInt(document.getElementById('manualYear').value, 10);
             let m = singleMonthView + delta;
-            
             if (m > 11) { m = 0; y++; }
             if (m < 0) { m = 11; y--; }
-            
             document.getElementById('manualYear').value = y;
             singleMonthView = m;
             renderCalendar();
@@ -510,53 +784,72 @@
         }
 
         function toggleAllLocs(isChecked) {
-            document.querySelectorAll('.loc-chk').forEach(chk => chk.checked = isChecked);
+            document.querySelectorAll('.category-chk').forEach(chk => chk.checked = isChecked);
             renderCalendar();
         }
 
-        function checkLocs() {
-            const allChecked = Array.from(document.querySelectorAll('.loc-chk')).every(chk => chk.checked);
+        function checkCategoryFilters() {
+            const allChecked = Array.from(document.querySelectorAll('.category-chk')).every(chk => chk.checked);
             document.getElementById('chkAll').checked = allChecked;
             renderCalendar();
         }
 
-        function getThemeForLocation(loc) {
-            const upLoc = loc.toUpperCase();
-            for (const [key, idx] of Object.entries(activeSelectionIndexes)) {
-                if (upLoc.includes(key)) return global9Palettes[idx];
+        function getThemeForCategory(catStr) {
+            const norm = catStr.toUpperCase();
+            for (const catKey of dynamicCategoriesList) {
+                if (norm.includes(catKey)) {
+                    const themeIdx = activeSelectionIndexes[catKey] !== undefined ? activeSelectionIndexes[catKey] : 8;
+                    return global9Palettes[themeIdx];
+                }
             }
             return defaultUnspecifiedTheme;
         }
 
-        function initColorPickers() {
-            pickerMappings.forEach(mapping => {
-                const container = document.getElementById(mapping.id);
-                container.innerHTML = '';
+        function initColorPickersInSettings() {
+            const container = document.getElementById('themesListContainer');
+            container.innerHTML = '';
+            
+            dynamicCategoriesList.forEach(catKey => {
+                const labelText = catKey.charAt(0) + catKey.slice(1).toLowerCase();
+                const row = document.createElement('div');
+                row.className = 'theme-config-row';
+                row.innerHTML = `<span>${labelText}</span>`;
+                
+                const optionsWrapper = document.createElement('div');
+                optionsWrapper.className = 'palette-options';
+                
+                if (activeSelectionIndexes[catKey] === undefined) activeSelectionIndexes[catKey] = 8;
                 
                 global9Palettes.forEach((palette, idx) => {
                     const swatch = document.createElement('div');
                     swatch.className = 'color-swatch';
-                    swatch.style.backgroundColor = palette.text; 
+                    swatch.style.backgroundColor = palette.text;
                     
-                    if (idx === activeSelectionIndexes[mapping.key]) {
+                    if (idx === activeSelectionIndexes[catKey]) {
                         swatch.classList.add('active');
                         swatch.style.boxShadow = `0 0 0 2px var(--card-bg), 0 0 0 4px ${palette.text}`;
                     }
                     
                     swatch.onclick = () => {
-                        activeSelectionIndexes[mapping.key] = idx;
-                        Array.from(container.children).forEach(c => {
-                            c.classList.remove('active');
-                            c.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.15)';
+                        activeSelectionIndexes[catKey] = idx;
+                        Array.from(optionsWrapper.children).forEach(sw => {
+                            sw.classList.remove('active');
+                            sw.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.15)';
                         });
                         swatch.classList.add('active');
                         swatch.style.boxShadow = `0 0 0 2px var(--card-bg), 0 0 0 4px ${palette.text}`;
+                        updateDropdownIndicators();
                         renderCalendar();
                     };
-                    container.appendChild(swatch);
+                    optionsWrapper.appendChild(swatch);
                 });
+                
+                row.appendChild(optionsWrapper);
+                container.appendChild(row);
             });
         }
+
+        // ── PARSING UTILITIES ────────────────────────────────────────────────
 
         function normalizeString(str) { return str ? str.trim().replace(/\s+/g, ' ') : 'Unspecified'; }
 
@@ -584,115 +877,107 @@
             return arr;
         }
 
-        async function handlePasteLink(targetId) {
-            try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById(targetId).value = text;
-                saveState();
-            } catch (err) {
-                const fallbackText = prompt("Clipboard access restricted. Please manually paste the link:");
-                if (fallbackText) {
-                    document.getElementById(targetId).value = fallbackText;
-                    saveState();
-                }
-            }
-        }
+        // ── SYNC FROM SHEET ──────────────────────────────────────────────────
 
         async function loadFromSheet() {
             const urlInput = document.getElementById('sheetUrl').value.trim();
-            if (!urlInput) return alert("Please enter a Standard Google Sheet link.");
+            if (!urlInput) return alert("Please specify your Google Sheet Link inside Settings first.");
             
             const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
-            if (!match) return alert("Invalid Standard Google Sheet link. It must contain '/d/SPREADSHEET_ID'.");
+            if (!match) return alert("Invalid Google Sheet link structure inside configuration panel.");
             
             const sheetId = match[1];
             const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
             
             try {
                 const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error("Ensure the sheet is set to 'Anyone with the link can view'.");
+                if (!response.ok) throw new Error("Verify your spreadsheet sharing limits are open.");
                 const csvText = await response.text();
                 
                 rawEvents = [];
                 const rows = parseCSV(csvText);
                 
                 rows.forEach(cols => {
-                    if (cols.length >= 4) { 
+                    if (cols.length >= 5) { 
                         const yearVal = parseInt(cols[0], 10);
                         const dateStr = cols[1] ? cols[1].trim() : '';
                         const holiday = cols[3] ? cols[3].trim() : '';
-                        const rawLoc = cols[4] ? cols[4].trim() : 'Unspecified';
+                        const rawCategory = cols[4] ? cols[4].trim().toUpperCase() : 'UNSPECIFIED';
                         
                         if (dateStr && holiday && !isNaN(yearVal)) {
                             const parsedDate = parseFlexibleDate(dateStr, yearVal);
-                            if (parsedDate) rawEvents.push({ date: parsedDate, holiday: holiday, location: normalizeString(rawLoc) });
+                            if (parsedDate) {
+                                rawEvents.push({ date: parsedDate, holiday: holiday, category: normalizeString(rawCategory) });
+                                if (!dynamicCategoriesList.includes(rawCategory) && rawCategory !== 'UNSPECIFIED') {
+                                    dynamicCategoriesList.push(rawCategory);
+                                }
+                            }
                         }
                     }
                 });
+                buildCategoryDropdownUI();
+                populateModalCategorySelect();
+                initColorPickersInSettings();
+                updateDropdownIndicators();
                 renderCalendar();
             } catch (err) {
-                alert("Failed to load sheet: " + err.message);
+                alert("Failed to sync sheet records: " + err.message);
             }
         }
 
-        async function handlePasteClipboard() {
-            try {
-                const text = await navigator.clipboard.readText();
-                if (text) processClipboardData(text);
-                else alert("Clipboard is empty.");
-            } catch (err) {
-                const fallbackText = prompt("Clipboard access restricted. Please paste your data directly here:");
-                if (fallbackText) processClipboardData(fallbackText);
-            }
-        }
-
-        function processClipboardData(text) {
-            if (!text) return;
-            rawEvents = [];
-
-            text.split('\n').forEach(line => {
-                const cols = line.split('\t').map(c => c.trim());
-                if (cols.length >= 4) {
-                    const yearVal = parseInt(cols[0], 10);
-                    if(!isNaN(yearVal)) {
-                        const parsedDate = parseFlexibleDate(cols[1], yearVal);
-                        if (parsedDate) rawEvents.push({ date: parsedDate, holiday: cols[3], location: normalizeString(cols[4] || 'Unspecified') });
-                    }
-                }
-            });
-            renderCalendar();
-        }
+        // ── MODAL OPEN / CLOSE ───────────────────────────────────────────────
 
         function clearSingleMonth() {
             singleMonthView = null;
             renderCalendar();
         }
 
-        function openEventModal() { document.getElementById('eventModal').style.display = 'flex'; }
+        function openSettingsModal() { 
+            switchSettingsTab('Integration');
+            document.getElementById('settingsModal').style.display = 'flex'; 
+        }
+        function closeSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
+        
+        function openEventModal() {
+            // Reset the panel and select before showing
+            document.getElementById('newCategoryPanel').classList.remove('visible');
+            document.getElementById('newCategoryName').value = '';
+            populateModalCategorySelect();
+            buildNewCatSwatches();
+            document.getElementById('eventModal').style.display = 'flex';
+        }
         function closeEventModal() { 
             document.getElementById('eventModal').style.display = 'none'; 
             document.getElementById('newEventDate').value = '';
             document.getElementById('newEventDay').value = '';
             document.getElementById('newEventName').value = '';
+            document.getElementById('newCategoryPanel').classList.remove('visible');
+            document.getElementById('newCategoryName').value = '';
         }
 
         function updateModalDay() {
             const dateVal = document.getElementById('newEventDate').value;
             if(!dateVal) { document.getElementById('newEventDay').value = ''; return; }
-            
             const [y, m, d] = dateVal.split('-');
             const parsedDate = new Date(y, m - 1, d);
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             document.getElementById('newEventDay').value = days[parsedDate.getDay()];
         }
 
+        // ── SUBMIT NEW EVENT ─────────────────────────────────────────────────
+
         async function submitNewEvent() {
             const dateVal = document.getElementById('newEventDate').value; 
             const name = document.getElementById('newEventName').value;
-            const loc = document.getElementById('newEventLocation').value;
+            const sel = document.getElementById('newEventCategorySelect');
+            const categoryRaw = sel.value;
             const webAppUrl = document.getElementById('webAppUrl').value.trim();
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
 
-            if(!dateVal || !name) return alert("Date and Event are required.");
+            if(!dateVal || !name) return alert("Date and Event fields are required.");
+            if(!categoryRaw || categoryRaw === '__new__') return alert("Please select or create a category.");
+            
+            const category = categoryRaw.toUpperCase();
 
             const [y, m, d] = dateVal.split('-');
             const parsedDate = new Date(y, m - 1, d);
@@ -700,8 +985,7 @@
             const dateStr = parsedDate.getDate() + ' ' + parsedDate.toLocaleString('default', { month: 'short' });
             const dayStr = document.getElementById('newEventDay').value;
             
-            rawEvents.push({ date: parsedDate, holiday: name, location: loc });
-            
+            rawEvents.push({ date: parsedDate, holiday: name, category: category });
             document.getElementById('manualYear').value = year;
             renderCalendar();
             closeEventModal();
@@ -710,29 +994,76 @@
                 try {
                     await fetch(webAppUrl, {
                         method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ year: year, date: dateStr, day: dayStr, event: name, location: loc })
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ 
+                            action: 'add',
+                            apiKey: apiKey,
+                            year: year, 
+                            date: dateStr, 
+                            day: dayStr, 
+                            event: name, 
+                            category: category,
+                            location: category
+                        })
                     });
-                    console.log("POST request sent to external Web App endpoint.");
                 } catch(e) {
-                    console.error("Submission failed", e);
-                    alert("Warning: Visual calendar updated, but failed to reach Web App URL. Ensure your Apps Script is deployed and accessible.");
+                    console.error("Submission failed safely", e);
                 }
             }
         }
 
+        // ── DELETE EVENT ─────────────────────────────────────────────────────
+
+        async function deleteEvent(eventItem, eventDateObj) {
+            const confirmDelete = confirm(`Are you sure you want to delete the event: "${eventItem.holiday}"?`);
+            if (!confirmDelete) return;
+
+            const webAppUrl = document.getElementById('webAppUrl').value.trim();
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            
+            const year = eventDateObj.getFullYear();
+            const dateStr = eventDateObj.getDate() + ' ' + eventDateObj.toLocaleString('default', { month: 'short' });
+            const itemCategory = (eventItem.category || eventItem.location || 'Unspecified');
+
+            rawEvents = rawEvents.filter(ev => !(
+                ev.date.getTime() === eventDateObj.getTime() && 
+                ev.holiday === eventItem.holiday && 
+                (ev.category || ev.location || 'Unspecified').toUpperCase() === itemCategory.toUpperCase()
+            ));
+            
+            renderCalendar();
+
+            if (webAppUrl) {
+                try {
+                    await fetch(webAppUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'delete',
+                            apiKey: apiKey,
+                            year: year,
+                            date: dateStr,
+                            event: eventItem.holiday,
+                            category: itemCategory,
+                            location: itemCategory
+                        })
+                    });
+                } catch (e) {
+                    console.error("Deletion communication error logged:", e);
+                }
+            }
+        }
+
+        // ── RENDER CALENDAR ──────────────────────────────────────────────────
+
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
             const viewHeader = document.getElementById('viewHeader');
-            const topPanel = document.getElementById('topPanel');
-            const yearNav = document.getElementById('yearNav');
-            const monthNav = document.getElementById('monthNav');
             
             container.innerHTML = '';
             
-            const checkedBoxes = Array.from(document.querySelectorAll('.loc-chk:checked'));
-            const selectedLocs = checkedBoxes.map(chk => chk.value.toUpperCase());
+            const checkedBoxes = Array.from(document.querySelectorAll('.category-chk:checked'));
+            const selectedCategories = checkedBoxes.map(chk => chk.value.toUpperCase());
             const yearText = document.getElementById('manualYear').value.trim();
             
             let syncYear = yearText ? parseInt(yearText, 10) : new Date().getFullYear();
@@ -746,11 +1077,8 @@
             const realTodayMonth = realToday.getMonth();
             const realTodayDate = realToday.getDate();
 
-            // Toggle UI states based on view mode
             if (singleMonthView !== null) {
-                topPanel.style.display = 'none';
-                yearNav.style.display = 'none';
-                monthNav.style.display = 'flex';
+                updateLayoutStateNavbar('single');
                 viewHeader.style.display = 'flex';
                 
                 const mm = String(singleMonthView + 1).padStart(2, '0');
@@ -762,9 +1090,7 @@
                 container.classList.remove('grid-view');
                 container.classList.add('single-view');
             } else {
-                topPanel.style.display = 'grid';
-                yearNav.style.display = 'flex';
-                monthNav.style.display = 'none';
+                updateLayoutStateNavbar('grid');
                 viewHeader.style.display = 'none';
                 
                 container.style.gridTemplateColumns = 'repeat(3, 1fr)';
@@ -779,15 +1105,19 @@
 
                 const monthEvents = rawEvents.filter(ev => {
                     if (ev.date.getMonth() !== monthIdx || ev.date.getFullYear() !== syncYear) return false;
-                    const normalizedEvLoc = ev.location.toUpperCase();
-                    return selectedLocs.some(sel => normalizedEvLoc.includes(sel));
+                    const normEvCategory = (ev.category || ev.location || 'Unspecified').toUpperCase();
+                    return selectedCategories.some(sel => normEvCategory.includes(sel));
                 });
 
                 const card = document.createElement('div');
                 card.className = 'month-card';
                 
                 if (singleMonthView === null) {
-                    card.onclick = () => { singleMonthView = monthIdx; renderCalendar(); };
+                    card.onclick = (e) => { 
+                        if (e.target.closest('.holiday-label') || e.target.closest('.month-summary')) return;
+                        singleMonthView = monthIdx; 
+                        renderCalendar(); 
+                    };
                 }
 
                 const displayMonthName = new Date(syncYear, monthIdx, 1).toLocaleString('default', { month: 'long' });
@@ -824,8 +1154,9 @@
                         dotsContainer.className = 'dots-container';
 
                         eventDayMap[day].forEach(ev => {
-                            const theme = getThemeForLocation(ev.location);
-                            const isBirthday = ev.location.toUpperCase().includes('BIRTHDAY');
+                            const currentCatString = ev.category || ev.location || 'Unspecified';
+                            const theme = getThemeForCategory(currentCatString);
+                            const isBirthday = currentCatString.toUpperCase().includes('BIRTHDAY');
                             
                             const label = document.createElement('div');
                             label.className = 'holiday-label';
@@ -833,6 +1164,13 @@
                             label.style.borderLeft = `3px solid ${theme.text}`;
                             label.style.color = theme.text;
                             label.textContent = isBirthday ? `🎂 ${ev.holiday}` : ev.holiday;
+                            
+                            const explicitEventDate = new Date(syncYear, monthIdx, day);
+                            label.onclick = (e) => {
+                                e.stopPropagation();
+                                deleteEvent(ev, explicitEventDate);
+                            };
+                            
                             cell.appendChild(label);
 
                             const printDot = document.createElement('div');
@@ -852,7 +1190,7 @@
 
                 let groupedDict = {};
                 monthEvents.forEach(ev => {
-                    const key = ev.holiday + '|' + ev.location;
+                    const key = ev.holiday + '|' + (ev.category || ev.location || 'Unspecified');
                     if (!groupedDict[key]) groupedDict[key] = [];
                     groupedDict[key].push(ev);
                 });
@@ -882,13 +1220,19 @@
                     const startDay = String(group.date.getDate()).padStart(2, '0');
                     const endDay = String(group.endDate.getDate()).padStart(2, '0');
                     const dateDisplay = (startDay === endDay) ? startDay : `${startDay}-${endDay}`;
-                    const theme = getThemeForLocation(group.location);
+                    const theme = getThemeForCategory(group.category || group.location || 'Unspecified');
                     
                     item.innerHTML = `
                         <div class="summary-color" style="background-color: ${theme.text}"></div>
                         <div class="summary-date">${dateDisplay}</div>
                         <div class="summary-name" style="color: ${theme.text}">${group.holiday}</div>
                     `;
+                    
+                    item.onclick = (e) => {
+                        e.stopPropagation();
+                        deleteEvent(group, group.date);
+                    };
+
                     summaryDiv.appendChild(item);
                 });
 
