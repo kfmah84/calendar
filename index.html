@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar Generator</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
             --bg: #f5f5f7; 
@@ -29,15 +29,8 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        h2 {
-            font-weight: 600;
-            font-size: 1.5rem;
-            margin-top: 0;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
-        }
+        h2 { font-weight: 600; font-size: 1.5rem; margin-top: 0; margin-bottom: 20px; letter-spacing: -0.02em; }
 
-        /* Top Panel - macOS Preferences Style Layout */
         .top-panel {
             background: var(--card-bg);
             padding: 24px;
@@ -50,392 +43,228 @@
             gap: 40px;
         }
 
-        .left-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .left-column { display: flex; flex-direction: column; gap: 20px; }
+        .right-column { display: flex; flex-direction: column; gap: 16px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
 
-        .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        label.group-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.02em; }
 
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        input[type="text"], input[type="date"], input[type="month"], input[type="number"], select {
+            border: 1px solid #c6c6c8; padding: 6px 10px; border-radius: 6px; font-family: inherit;
+            font-size: 13px; outline: none; background: #ffffff; box-sizing: border-box;
+            width: 100%; box-shadow: inset 0 1px 2px rgba(0,0,0,0.03); transition: all 0.2s;
         }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2), inset 0 1px 2px rgba(0,0,0,0.03); }
 
-        label.group-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: 0.02em;
-        }
-
-        /* macOS Style Inputs */
-        input[type="number"], input[type="text"] {
-            border: 1px solid #c6c6c8;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 13px;
-            outline: none;
-            background: #ffffff;
-            box-sizing: border-box;
-            width: 100%;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
-            transition: all 0.2s;
-        }
-
-        input[type="number"]:focus, input[type="text"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2), inset 0 1px 2px rgba(0,0,0,0.03);
-        }
-
-        /* macOS Style Buttons */
-        .button-group-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .button-group-col {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .button-group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .button-group-col { display: flex; flex-direction: column; gap: 8px; }
 
         button {
-            border-radius: 6px;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 13px;
-            letter-spacing: -0.01em;
-            transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-            border: 0.5px solid transparent;
-            box-sizing: border-box;
+            border-radius: 6px; padding: 6px 12px; cursor: pointer; font-weight: 500; font-size: 13px;
+            letter-spacing: -0.01em; transition: all 0.1s; display: flex; align-items: center; justify-content: center;
+            gap: 6px; width: 100%; border: 0.5px solid transparent; box-sizing: border-box; font-family: inherit;
         }
 
         .btn-primary { 
-            background-color: var(--primary); 
-            background-image: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%);
-            color: white; 
-            border-color: #006ae6;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15);
+            background-color: var(--primary); background-image: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%);
+            color: white; border-color: #006ae6; box-shadow: 0 1px 1px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.15);
         }
-        .btn-primary:active { 
-            background-color: var(--primary-hover); 
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
-        }
+        .btn-primary:active { background-color: var(--primary-hover); box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); }
 
-        .btn-secondary, .btn-print { 
-            background-color: #ffffff; 
-            color: var(--text-main);
-            border-color: #c6c6c8;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.04), inset 0 -1px 0 rgba(0,0,0,0.02);
+        .btn-secondary, .btn-print, .btn-back { 
+            background-color: #ffffff; color: var(--text-main); border-color: #c6c6c8; box-shadow: 0 1px 1px rgba(0,0,0,0.04), inset 0 -1px 0 rgba(0,0,0,0.02);
         }
-        .btn-secondary:active, .btn-print:active { 
-            background-color: #f2f2f7; 
-        }
-
-        /* Filter & Picker Layout Grid */
-        .filter-row {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            align-items: center;
-            padding: 6px 12px;
-            background: #ffffff;
-            border-radius: 6px;
-        }
+        .btn-secondary:active, .btn-print:active, .btn-back:active { background-color: #f2f2f7; }
         
-        .filter-row:nth-child(even) {
-            background: #f9f9fb;
-        }
-        
-        /* Special handling for 'All' row without pickers */
-        .filter-row.all-row {
-            display: block;
-            margin-bottom: 4px;
-            border: none;
-            background: transparent;
-            padding: 0 12px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            border-radius: 0;
-        }
+        .btn-back { width: auto; border-radius: 20px; padding: 6px 16px; margin-bottom: 20px; font-size: 14px; }
 
-        .mac-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-main);
-            cursor: pointer;
-        }
+        .filter-row { display: grid; grid-template-columns: 140px 1fr; align-items: center; padding: 6px 12px; background: #ffffff; border-radius: 6px; }
+        .filter-row:nth-child(even) { background: #f9f9fb; }
+        .filter-row.all-row { display: block; margin-bottom: 4px; border: none; background: transparent; padding: 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; border-radius: 0; }
 
-        .mac-checkbox input[type="checkbox"] {
-            accent-color: var(--primary);
-            width: 14px;
-            height: 14px;
-            cursor: pointer;
-            margin: 0;
-        }
+        .mac-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .mac-checkbox input[type="checkbox"] { accent-color: var(--primary); width: 14px; height: 14px; cursor: pointer; margin: 0; }
 
-        .palette-options {
-            display: flex;
-            gap: 6px;
-            flex-wrap: nowrap;
-        }
-
-        /* Solid Color Swatches */
+        .palette-options { display: flex; gap: 6px; flex-wrap: nowrap; }
         .color-swatch {
-            width: 16px; 
-            height: 16px;
-            min-width: 16px;
-            min-height: 16px;
-            max-width: 16px;
-            max-height: 16px;
-            border-radius: 50%;
-            cursor: pointer;
-            box-sizing: border-box;
-            border: none;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
-            position: relative;
-            transition: transform 0.1s;
+            width: 16px; height: 16px; min-width: 16px; min-height: 16px; border-radius: 50%; cursor: pointer; box-sizing: border-box; border: none;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); position: relative; transition: transform 0.1s;
         }
-        
         .color-swatch:active { transform: scale(0.85); }
-
         .color-swatch.active::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 6px; height: 6px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* Screen Only Element */
         .print-header { display: none; }
         .divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-        /* Calendar Grid Layout */
-        .calendar-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .month-card {
+        /* --- Centered Navigation (Year / Month) --- */
+        .nav-container {
             display: flex;
-            flex-direction: column;
-            page-break-inside: avoid;
-            break-inside: avoid;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            padding: 16px;
-        }
-
-        .month-title {
-            font-weight: 600;
-            font-size: 1.25rem;
-            margin-bottom: 12px;
-            color: var(--today-bg); 
-            letter-spacing: 0.02em;
-        }
-
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background: var(--border);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .day-header {
-            background: var(--card-bg);
-            font-weight: 600;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            padding: 6px 0;
-            text-align: center;
-        }
-
-        .day-cell {
-            background: var(--card-bg);
-            min-height: 65px;
-            padding: 4px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-sizing: border-box;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
         }
         
-        .day-cell.is-today .day-num {
-            background-color: var(--today-bg);
-            color: white;
-            border-radius: 50%;
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .day-num { 
-            font-size: 0.85rem; 
-            font-weight: 500;
-            margin: 2px 2px 4px auto; 
-            width: 22px;
-            height: 22px;
+        .nav-input {
+            font-family: inherit;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-main);
+            background: transparent;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        input[type="number"].nav-input {
+            width: 160px;
+            -moz-appearance: textfield;
+        }
+        input[type="number"].nav-input::-webkit-outer-spin-button,
+        input[type="number"].nav-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        input[type="month"].nav-input {
+            width: 340px; 
+        }
+
+        .nav-input:hover, .nav-input:focus {
+            background: var(--card-bg);
+            border-color: #c6c6c8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: text;
+        }
+
+        .nav-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .nav-btn:hover { background: #f2f2f7; color: var(--text-main); transform: scale(1.05); }
+        .nav-btn:active { transform: scale(0.95); }
+
+        /* Calendar Grid Layout */
+        #viewHeader { display: none; }
+        .calendar-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; transition: all 0.3s ease; }
+        
+        .month-card {
+            display: flex; flex-direction: column; page-break-inside: avoid; break-inside: avoid;
+            background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 16px; transition: transform 0.15s, box-shadow 0.15s;
         }
 
+        /* --- Full Height adjustments for Single View --- */
+        .calendar-container.single-view .month-card {
+            min-height: calc(100vh - 160px); 
+        }
+        .calendar-container.single-view .days-grid {
+            flex-grow: 1; 
+        }
+        .calendar-container.single-view .day-cell {
+            min-height: 100px;
+        }
+        
+        .calendar-container.grid-view .month-card { cursor: pointer; }
+        .calendar-container.grid-view .month-card:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+
+        .month-title { font-weight: 600; font-size: 1.25rem; margin-bottom: 12px; color: var(--today-bg); letter-spacing: 0.02em; }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        .day-header { background: var(--card-bg); font-weight: 600; font-size: 0.7rem; color: var(--text-muted); padding: 6px 0; text-align: center; }
+        .day-cell { background: var(--card-bg); min-height: 65px; padding: 4px; display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+        .day-cell.is-today .day-num { background-color: var(--today-bg); color: white; border-radius: 50%; }
+        .day-num { font-size: 0.85rem; font-weight: 500; margin: 2px 2px 4px auto; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
         .empty-cell { background: var(--bg); }
-
-        .holiday-label {
-            font-size: 0.7rem;
-            line-height: 1.15;
-            padding: 2px 4px;
-            margin-top: 2px;
-            border-radius: 4px;
-            border-left: 3px solid transparent;
-            word-break: break-word;
-            font-weight: 500;
-        }
+        .holiday-label { font-size: 0.7rem; line-height: 1.15; padding: 2px 4px; margin-top: 2px; border-radius: 4px; border-left: 3px solid transparent; word-break: break-word; font-weight: 500; }
 
         .dots-container { display: none; }
         .holiday-dot { display: none; }
 
-        .month-summary {
-            margin-top: 16px;
-        }
-
-        .summary-item {
-            display: grid;
-            grid-template-columns: 8px 40px 1fr;
-            align-items: center;
-            gap: 12px;
-            padding: 4px 0;
-            font-size: 0.825rem;
-        }
-
-        .summary-color {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
+        .month-summary { margin-top: 16px; }
+        .summary-item { display: grid; grid-template-columns: 8px 40px 1fr; align-items: center; gap: 12px; padding: 4px 0; font-size: 0.825rem; }
+        .summary-color { width: 8px; height: 8px; border-radius: 50%; }
         .summary-date { font-weight: 500; color: var(--text-muted); white-space: nowrap; }
         .summary-name { font-weight: 500; }
 
+        /* Floating Action Button (FAB) */
+        .fab {
+            position: fixed; bottom: 40px; right: 40px; width: 56px; height: 56px; border-radius: 50%;
+            background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(0,122,255,0.4);
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            transition: transform 0.2s, background 0.2s; border: none; z-index: 100;
+        }
+        .fab:hover { transform: scale(1.05); background: var(--primary-hover); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--card-bg); width: 340px; padding: 24px; border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 16px;
+        }
+        .modal-content h3 { margin: 0 0 8px 0; font-size: 1.2rem; }
+        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+
         /* === PDF STRICT OPTIMIZATION === */
         @media print {
-            @page { size: A4 portrait; margin: 10mm; }
-            .no-print { display: none !important; }
+            @page { size: A4 portrait; margin: 5mm; }
+            .no-print, .fab, .modal-overlay, #viewHeader, .nav-container { display: none !important; }
             body { padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
-            /* Medium-sized Year Header for PDF (Top Left) */
             .print-header {
-                display: block !important;
-                font-size: 1.5rem !important;
-                font-weight: 600 !important;
-                color: #000 !important;
-                margin-bottom: 5mm !important;
-                text-align: left !important;
-                line-height: 1 !important;
+                display: block !important; font-size: 1.5rem !important; font-weight: 600 !important;
+                color: var(--text-main) !important; margin-bottom: 5mm !important; text-align: left !important; line-height: 1 !important;
             }
 
-            .calendar-container { 
-                display: grid !important; 
-                grid-template-columns: repeat(3, 1fr) !important; 
-                gap: 4mm !important; 
-            }
+            .calendar-container { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4mm !important; }
             
             .month-card { 
-                height: 62mm !important; 
-                overflow: hidden !important; 
-                margin: 0 !important;
-                padding: 4mm !important;
-                border: 1px solid #e5e5ea !important;
-                border-radius: 10px !important;
-                background: white !important;
-                box-shadow: none !important;
-                box-sizing: border-box !important;
-                page-break-inside: avoid;
-                break-inside: avoid;
+                height: 64mm !important; overflow: hidden !important; margin: 0 !important; padding: 2mm !important;
+                border: 1px solid #e5e5ea !important; border-radius: 10px !important; background: white !important;
+                box-shadow: none !important; box-sizing: border-box !important; page-break-inside: avoid; break-inside: avoid;
             }
             
-            .month-title {
-                font-size: 0.8rem !important;
-                margin-bottom: 2px !important;
-                color: #000 !important; 
-            }
+            .month-title { font-size: 0.8rem !important; margin-bottom: 2px !important; color: var(--today-bg) !important; }
             
             .days-grid { background: transparent !important; border: none !important; gap: 0 !important;}
             .day-header { font-size: 0.5rem !important; padding: 2px 0 !important; border: none !important;}
             .day-cell { min-height: 18px !important; padding: 2px !important; border: none !important;}
             .empty-cell { background: transparent !important; }
             
-            .day-num { 
-                font-size: 0.6rem !important; 
-                margin: 0 auto 2px auto !important; 
-                width: auto !important;
-                height: auto !important;
-            }
-
-            .day-cell.is-today .day-num {
-                background-color: transparent !important;
-                color: #000 !important;
-                text-decoration: underline; 
-            }
+            .day-num { font-size: 0.6rem !important; margin: 0 auto 2px auto !important; width: auto !important; height: auto !important; }
+            .day-cell.is-today .day-num { background-color: var(--today-bg) !important; color: white !important; }
             
             .holiday-label { display: none !important; }
-            .dots-container {
-                display: flex !important;
-                justify-content: center !important;
-                flex-wrap: wrap !important;
-                gap: 2px !important;
-                margin-top: auto !important;
-            }
-            .holiday-dot { 
-                display: inline-block !important; 
-                width: 5px !important; 
-                height: 5px !important; 
-                border-radius: 50% !important; 
-            }
-            .birthday-dot {
-                background-color: transparent !important;
-                width: auto !important;
-                height: auto !important;
-                font-size: 7px !important;
-                line-height: 1 !important;
-            }
+            .dots-container { display: flex !important; justify-content: center !important; flex-wrap: wrap !important; gap: 2px !important; margin-top: auto !important; }
+            .holiday-dot { display: inline-block !important; width: 5px !important; height: 5px !important; border-radius: 50% !important; }
+            .birthday-dot { background-color: transparent !important; width: auto !important; height: auto !important; font-size: 7px !important; line-height: 1 !important; }
 
             .month-summary { margin-top: 1px !important; overflow: hidden !important; }
             .summary-item { 
-                padding: 0 !important; 
-                margin-bottom: 1px !important;
-                gap: 3px !important; 
-                font-size: 0.45rem !important; 
-                line-height: 1.1 !important; 
-                align-items: start !important;
-                grid-template-columns: 4px 18px 1fr !important; 
+                padding: 0 !important; margin-bottom: 1px !important; gap: 3px !important; font-size: 0.45rem !important; 
+                line-height: 1.1 !important; align-items: start !important; grid-template-columns: 4px 28px 1fr !important; 
             }
             .summary-color { width: 4px !important; height: 4px !important; margin-top: 2px !important; }
         }
@@ -443,19 +272,15 @@
 </head>
 <body>
 
-    <div class="top-panel no-print">
+    <div class="top-panel no-print" id="topPanel">
         <div class="left-column">
-            <div class="control-group">
-                <label class="group-label" for="manualYear">Display Year</label>
-                <input type="number" id="manualYear" placeholder="e.g., 2026" value="2026" oninput="renderCalendar()">
-            </div>
             
             <div class="control-group">
-                <label class="group-label">Google Sheet Link</label>
-                <input type="text" id="sheetUrl" placeholder="Paste public URL here...">
+                <label class="group-label">Google Sheet Link (For Loading)</label>
+                <input type="text" id="sheetUrl" placeholder="https://docs.google.com/spreadsheets/..." onchange="saveState()">
                 <div class="button-group-row">
-                    <button class="btn-secondary" onclick="handlePasteLink()">Paste Link</button>
-                    <button class="btn-primary" onclick="loadFromSheet()">Load</button>
+                    <button class="btn-secondary" onclick="handlePasteLink('sheetUrl')">Paste Link</button>
+                    <button class="btn-primary" onclick="loadFromSheet()">Load Data</button>
                 </div>
             </div>
 
@@ -517,46 +342,172 @@
         </div>
     </div>
 
-    <div id="printYearHeader" class="print-header">2026</div>
+    <div class="nav-container no-print">
+        <div id="yearNav" class="nav-group">
+            <button class="nav-btn" onclick="changeYear(-1)">❮</button>
+            <input type="number" id="manualYear" class="nav-input" placeholder="2026" value="2026" oninput="renderCalendar()">
+            <button class="nav-btn" onclick="changeYear(1)">❯</button>
+        </div>
+        
+        <div id="monthNav" class="nav-group" style="display: none;">
+            <button class="nav-btn" onclick="changeMonth(-1)">❮</button>
+            <input type="month" id="manualMonth" class="nav-input" onchange="handleMonthPick()">
+            <button class="nav-btn" onclick="changeMonth(1)">❯</button>
+        </div>
+    </div>
 
-    <div class="calendar-container" id="calendarContainer"></div>
+    <div id="viewHeader" class="no-print" style="display: flex; justify-content: center;">
+        <button class="btn-back" onclick="clearSingleMonth()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            Show Full Year
+        </button>
+    </div>
+
+    <div id="printYearHeader" class="print-header"></div>
+
+    <div class="calendar-container grid-view" id="calendarContainer"></div>
+
+    <button class="fab no-print" onclick="openEventModal()" title="Add Event">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+
+    <div id="eventModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Add New Event</h3>
+            <div class="control-group">
+                <label class="group-label">Date</label>
+                <input type="date" id="newEventDate" onchange="updateModalDay()">
+            </div>
+            <div class="control-group">
+                <label class="group-label">Day of week</label>
+                <input type="text" id="newEventDay" readonly style="background: #f5f5f7; color: var(--text-muted); cursor: not-allowed;">
+            </div>
+            <div class="control-group">
+                <label class="group-label">Event</label>
+                <input type="text" id="newEventName" placeholder="Event name">
+            </div>
+            <div class="control-group">
+                <label class="group-label">Location</label>
+                <select id="newEventLocation">
+                    <option value="NATIONAL">National</option>
+                    <option value="KUALA LUMPUR">Kuala Lumpur</option>
+                    <option value="SELANGOR">Selangor</option>
+                    <option value="ON LEAVE">On Leave</option>
+                    <option value="BIRTHDAY">Birthday</option>
+                    <option value="SCHOOL">School</option>
+                </select>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="control-group">
+                <label class="group-label" style="color: var(--primary);">Web App URL (For Saving)</label>
+                <input type="text" id="webAppUrl" placeholder="https://script.google.com/macros/s/..." onchange="saveState()">
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">This links to your Apps Script doPost() trigger.</div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeEventModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitNewEvent()">Submit</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         let rawEvents = [];
-        let storedPastedText = "";
+        let singleMonthView = null;
         
-        // Soft Pastel Palette definitions for the calendar blocks
         const global9Palettes = [
-            { bg: '#f0f5ff', border: '#dbeafe', text: '#3b82f6' }, // 0 Soft Blue
-            { bg: '#f0fdf4', border: '#dcfce7', text: '#22c55e' }, // 1 Soft Green
-            { bg: '#fff7ed', border: '#ffedd5', text: '#f97316' }, // 2 Soft Orange
-            { bg: '#fef2f2', border: '#fecaca', text: '#ef4444' }, // 3 Soft Red
-            { bg: '#faf5ff', border: '#f3e8ff', text: '#a855f7' }, // 4 Soft Purple
-            { bg: '#fdf2f8', border: '#fce7f3', text: '#ec4899' }, // 5 Soft Pink
-            { bg: '#fefce8', border: '#fef9c3', text: '#eab308' }, // 6 Soft Yellow
-            { bg: '#f0fdfa', border: '#ccfbf1', text: '#14b8a6' }, // 7 Soft Teal
-            { bg: '#f8fafc', border: '#f1f5f9', text: '#64748b' }  // 8 Soft Slate
+            { bg: '#f0f5ff', border: '#dbeafe', text: '#3b82f6' }, 
+            { bg: '#f0fdf4', border: '#dcfce7', text: '#22c55e' }, 
+            { bg: '#fff7ed', border: '#ffedd5', text: '#f97316' }, 
+            { bg: '#fef2f2', border: '#fecaca', text: '#ef4444' }, 
+            { bg: '#faf5ff', border: '#f3e8ff', text: '#a855f7' }, 
+            { bg: '#fdf2f8', border: '#fce7f3', text: '#ec4899' }, 
+            { bg: '#fefce8', border: '#fef9c3', text: '#eab308' }, 
+            { bg: '#f0fdfa', border: '#ccfbf1', text: '#14b8a6' }, 
+            { bg: '#f8fafc', border: '#f1f5f9', text: '#64748b' }  
         ];
 
-        let activeSelectionIndexes = {
-            'NATIONAL': 0,
-            'KUALA LUMPUR': 1,
-            'SELANGOR': 2,
-            'ON LEAVE': 3,
-            'BIRTHDAY': 5, 
-            'SCHOOL': 6 
-        };
-
+        let activeSelectionIndexes = { 'NATIONAL': 0, 'KUALA LUMPUR': 1, 'SELANGOR': 2, 'ON LEAVE': 3, 'BIRTHDAY': 5, 'SCHOOL': 6 };
         const defaultUnspecifiedTheme = { bg: '#f9fafb', border: '#e5e7eb', text: '#9ca3af' };
-
         const pickerMappings = [
-            { id: 'palette-national', key: 'NATIONAL' },
-            { id: 'palette-kl', key: 'KUALA LUMPUR' },
-            { id: 'palette-selangor', key: 'SELANGOR' },
-            { id: 'palette-onleave', key: 'ON LEAVE' },
-            { id: 'palette-birthday', key: 'BIRTHDAY' },
-            { id: 'palette-school', key: 'SCHOOL' }
+            { id: 'palette-national', key: 'NATIONAL' }, { id: 'palette-kl', key: 'KUALA LUMPUR' },
+            { id: 'palette-selangor', key: 'SELANGOR' }, { id: 'palette-onleave', key: 'ON LEAVE' },
+            { id: 'palette-birthday', key: 'BIRTHDAY' }, { id: 'palette-school', key: 'SCHOOL' }
         ];
+
+        // --- LOCAL STORAGE MANAGER ---
+        function saveState() {
+            const state = {
+                manualYear: document.getElementById('manualYear').value,
+                rawEvents: rawEvents.map(e => ({...e, date: e.date.toISOString()})),
+                activeSelectionIndexes: activeSelectionIndexes,
+                singleMonthView: singleMonthView,
+                filters: Array.from(document.querySelectorAll('.loc-chk')).map(chk => ({ value: chk.value, checked: chk.checked })),
+                sheetUrl: document.getElementById('sheetUrl').value,
+                webAppUrl: document.getElementById('webAppUrl').value
+            };
+            localStorage.setItem('calendarGenState', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('calendarGenState');
+            if (saved) {
+                try {
+                    const state = JSON.parse(saved);
+                    if(state.manualYear) document.getElementById('manualYear').value = state.manualYear;
+                    if(state.rawEvents) rawEvents = state.rawEvents.map(e => ({...e, date: new Date(e.date)}));
+                    if(state.activeSelectionIndexes) activeSelectionIndexes = state.activeSelectionIndexes;
+                    if(state.singleMonthView !== undefined) singleMonthView = state.singleMonthView;
+                    if(state.sheetUrl) document.getElementById('sheetUrl').value = state.sheetUrl;
+                    if(state.webAppUrl) document.getElementById('webAppUrl').value = state.webAppUrl;
+                    
+                    if(state.filters) {
+                        state.filters.forEach(f => {
+                            const chk = document.querySelector(`.loc-chk[value="${f.value}"]`);
+                            if(chk) chk.checked = f.checked;
+                        });
+                        const allChecked = Array.from(document.querySelectorAll('.loc-chk')).every(chk => chk.checked);
+                        document.getElementById('chkAll').checked = allChecked;
+                    }
+                } catch(e) { console.error("Error loading state", e); }
+            }
+            initColorPickers();
+            renderCalendar();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadState);
+
+        // --- CORE UI ACTIONS ---
+        function changeYear(delta) {
+            const el = document.getElementById('manualYear');
+            let val = parseInt(el.value, 10) || new Date().getFullYear();
+            el.value = val + delta;
+            renderCalendar();
+        }
+
+        function changeMonth(delta) {
+            let y = parseInt(document.getElementById('manualYear').value, 10);
+            let m = singleMonthView + delta;
+            
+            if (m > 11) { m = 0; y++; }
+            if (m < 0) { m = 11; y--; }
+            
+            document.getElementById('manualYear').value = y;
+            singleMonthView = m;
+            renderCalendar();
+        }
+
+        function handleMonthPick() {
+            const val = document.getElementById('manualMonth').value;
+            if (val) {
+                const parts = val.split('-');
+                document.getElementById('manualYear').value = parts[0];
+                singleMonthView = parseInt(parts[1], 10) - 1;
+                renderCalendar();
+            }
+        }
 
         function toggleAllLocs(isChecked) {
             document.querySelectorAll('.loc-chk').forEach(chk => chk.checked = isChecked);
@@ -585,7 +536,6 @@
                 global9Palettes.forEach((palette, idx) => {
                     const swatch = document.createElement('div');
                     swatch.className = 'color-swatch';
-                    // Solid Color for the Picker Icon
                     swatch.style.backgroundColor = palette.text; 
                     
                     if (idx === activeSelectionIndexes[mapping.key]) {
@@ -608,33 +558,21 @@
             });
         }
 
-        function normalizeString(str) {
-            return str ? str.trim().replace(/\s+/g, ' ') : 'Unspecified';
-        }
+        function normalizeString(str) { return str ? str.trim().replace(/\s+/g, ' ') : 'Unspecified'; }
 
-        function parseFlexibleDate(dateStr, defaultYear) {
+        function parseFlexibleDate(dateStr, year) {
             let cleanStr = dateStr.trim();
-            if (/^\d+$/.test(cleanStr)) {
-                return new Date(defaultYear, 0, parseInt(cleanStr, 10));
-            }
-            let parsed = new Date(cleanStr);
-            if (isNaN(parsed.getTime()) || !/20\d\d|19\d\d/.test(cleanStr)) {
-                const updatedStr = cleanStr + " " + defaultYear;
-                const reParsed = new Date(updatedStr);
-                if (!isNaN(reParsed.getTime())) return reParsed;
-            }
-            return isNaN(parsed.getTime()) ? null : parsed;
+            if (/^\d+$/.test(cleanStr)) return new Date(year, 0, parseInt(cleanStr, 10));
+            let parsed = new Date(cleanStr + " " + year);
+            if (!isNaN(parsed.getTime())) return parsed;
+            return null;
         }
 
-        // Standard CSV Parser handling quotes and commas
         function parseCSV(str) {
-            const arr = [];
-            let quote = false;
-            let row = 0, col = 0;
+            const arr = []; let quote = false; let row = 0, col = 0;
             for (let c = 0; c < str.length; c++) {
                 let cc = str[c], nc = str[c+1];
-                arr[row] = arr[row] || [];
-                arr[row][col] = arr[row][col] || '';
+                arr[row] = arr[row] || []; arr[row][col] = arr[row][col] || '';
                 if (cc == '"' && quote && nc == '"') { arr[row][col] += cc; ++c; continue; }
                 if (cc == '"') { quote = !quote; continue; }
                 if (cc == ',' && !quote) { ++col; continue; }
@@ -646,27 +584,28 @@
             return arr;
         }
 
-        async function handlePasteLink() {
+        async function handlePasteLink(targetId) {
             try {
                 const text = await navigator.clipboard.readText();
-                document.getElementById('sheetUrl').value = text;
+                document.getElementById(targetId).value = text;
+                saveState();
             } catch (err) {
                 const fallbackText = prompt("Clipboard access restricted. Please manually paste the link:");
                 if (fallbackText) {
-                    document.getElementById('sheetUrl').value = fallbackText;
+                    document.getElementById(targetId).value = fallbackText;
+                    saveState();
                 }
             }
         }
 
         async function loadFromSheet() {
             const urlInput = document.getElementById('sheetUrl').value.trim();
-            if (!urlInput) return alert("Please enter a Google Sheet link.");
+            if (!urlInput) return alert("Please enter a Standard Google Sheet link.");
             
             const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
-            if (!match) return alert("Invalid Google Sheet link format. Ensure it contains '/d/SPREADSHEET_ID'.");
+            if (!match) return alert("Invalid Standard Google Sheet link. It must contain '/d/SPREADSHEET_ID'.");
             
             const sheetId = match[1];
-            // Uses the generic CSV export link for Google Sheets
             const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
             
             try {
@@ -675,26 +614,18 @@
                 const csvText = await response.text();
                 
                 rawEvents = [];
-                const yearInput = document.getElementById('manualYear').value.trim();
-                const fallbackYear = yearInput ? parseInt(yearInput, 10) : new Date().getFullYear();
-
                 const rows = parseCSV(csvText);
+                
                 rows.forEach(cols => {
-                    if (cols.length >= 3) {
-                        const dateStr = cols[0] ? cols[0].trim() : '';
-                        const holiday = cols[2] ? cols[2].trim() : '';
-                        const rawLoc = cols[3] ? cols[3].trim() : 'Unspecified';
+                    if (cols.length >= 4) { 
+                        const yearVal = parseInt(cols[0], 10);
+                        const dateStr = cols[1] ? cols[1].trim() : '';
+                        const holiday = cols[3] ? cols[3].trim() : '';
+                        const rawLoc = cols[4] ? cols[4].trim() : 'Unspecified';
                         
-                        if (dateStr && holiday) {
-                            const location = normalizeString(rawLoc); 
-                            const parsedDate = parseFlexibleDate(dateStr, fallbackYear);
-                            if (parsedDate) {
-                                rawEvents.push({
-                                    date: parsedDate,
-                                    holiday: holiday,
-                                    location: location
-                                });
-                            }
+                        if (dateStr && holiday && !isNaN(yearVal)) {
+                            const parsedDate = parseFlexibleDate(dateStr, yearVal);
+                            if (parsedDate) rawEvents.push({ date: parsedDate, holiday: holiday, location: normalizeString(rawLoc) });
                         }
                     }
                 });
@@ -707,54 +638,97 @@
         async function handlePasteClipboard() {
             try {
                 const text = await navigator.clipboard.readText();
-                if (text) {
-                    storedPastedText = text;
-                    processClipboardData();
-                } else {
-                    alert("Clipboard is empty.");
-                }
+                if (text) processClipboardData(text);
+                else alert("Clipboard is empty.");
             } catch (err) {
                 const fallbackText = prompt("Clipboard access restricted. Please paste your data directly here:");
-                if (fallbackText) {
-                    storedPastedText = fallbackText;
-                    processClipboardData();
+                if (fallbackText) processClipboardData(fallbackText);
+            }
+        }
+
+        function processClipboardData(text) {
+            if (!text) return;
+            rawEvents = [];
+
+            text.split('\n').forEach(line => {
+                const cols = line.split('\t').map(c => c.trim());
+                if (cols.length >= 4) {
+                    const yearVal = parseInt(cols[0], 10);
+                    if(!isNaN(yearVal)) {
+                        const parsedDate = parseFlexibleDate(cols[1], yearVal);
+                        if (parsedDate) rawEvents.push({ date: parsedDate, holiday: cols[3], location: normalizeString(cols[4] || 'Unspecified') });
+                    }
+                }
+            });
+            renderCalendar();
+        }
+
+        function clearSingleMonth() {
+            singleMonthView = null;
+            renderCalendar();
+        }
+
+        function openEventModal() { document.getElementById('eventModal').style.display = 'flex'; }
+        function closeEventModal() { 
+            document.getElementById('eventModal').style.display = 'none'; 
+            document.getElementById('newEventDate').value = '';
+            document.getElementById('newEventDay').value = '';
+            document.getElementById('newEventName').value = '';
+        }
+
+        function updateModalDay() {
+            const dateVal = document.getElementById('newEventDate').value;
+            if(!dateVal) { document.getElementById('newEventDay').value = ''; return; }
+            
+            const [y, m, d] = dateVal.split('-');
+            const parsedDate = new Date(y, m - 1, d);
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            document.getElementById('newEventDay').value = days[parsedDate.getDay()];
+        }
+
+        async function submitNewEvent() {
+            const dateVal = document.getElementById('newEventDate').value; 
+            const name = document.getElementById('newEventName').value;
+            const loc = document.getElementById('newEventLocation').value;
+            const webAppUrl = document.getElementById('webAppUrl').value.trim();
+
+            if(!dateVal || !name) return alert("Date and Event are required.");
+
+            const [y, m, d] = dateVal.split('-');
+            const parsedDate = new Date(y, m - 1, d);
+            const year = parsedDate.getFullYear();
+            const dateStr = parsedDate.getDate() + ' ' + parsedDate.toLocaleString('default', { month: 'short' });
+            const dayStr = document.getElementById('newEventDay').value;
+            
+            rawEvents.push({ date: parsedDate, holiday: name, location: loc });
+            
+            document.getElementById('manualYear').value = year;
+            renderCalendar();
+            closeEventModal();
+
+            if(webAppUrl) {
+                try {
+                    await fetch(webAppUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ year: year, date: dateStr, day: dayStr, event: name, location: loc })
+                    });
+                    console.log("POST request sent to external Web App endpoint.");
+                } catch(e) {
+                    console.error("Submission failed", e);
+                    alert("Warning: Visual calendar updated, but failed to reach Web App URL. Ensure your Apps Script is deployed and accessible.");
                 }
             }
         }
 
-        function processClipboardData() {
-            if (!storedPastedText) return;
-
-            rawEvents = [];
-            const yearInput = document.getElementById('manualYear').value.trim();
-            const fallbackYear = yearInput ? parseInt(yearInput, 10) : new Date().getFullYear();
-
-            const lines = storedPastedText.split('\n');
-            lines.forEach(line => {
-                const cols = line.split('\t').map(c => c.trim());
-                if (cols.length >= 3) {
-                    const dateStr = cols[0];
-                    const holiday = cols[2];
-                    const rawLoc = cols[3] || 'Unspecified';
-                    
-                    const location = normalizeString(rawLoc); 
-                    const parsedDate = parseFlexibleDate(dateStr, fallbackYear);
-                    
-                    if (parsedDate) {
-                        rawEvents.push({
-                            date: parsedDate,
-                            holiday: holiday,
-                            location: location
-                        });
-                    }
-                }
-            });
-
-            renderCalendar();
-        }
-
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
+            const viewHeader = document.getElementById('viewHeader');
+            const topPanel = document.getElementById('topPanel');
+            const yearNav = document.getElementById('yearNav');
+            const monthNav = document.getElementById('monthNav');
+            
             container.innerHTML = '';
             
             const checkedBoxes = Array.from(document.querySelectorAll('.loc-chk:checked'));
@@ -764,7 +738,6 @@
             let syncYear = yearText ? parseInt(yearText, 10) : new Date().getFullYear();
             if (isNaN(syncYear)) syncYear = new Date().getFullYear();
 
-            // Set PDF Header
             const printHeader = document.getElementById('printYearHeader');
             if (printHeader) printHeader.textContent = syncYear;
 
@@ -773,16 +746,49 @@
             const realTodayMonth = realToday.getMonth();
             const realTodayDate = realToday.getDate();
 
-            for (let monthIdx = 0; monthIdx < 12; monthIdx++) {
+            // Toggle UI states based on view mode
+            if (singleMonthView !== null) {
+                topPanel.style.display = 'none';
+                yearNav.style.display = 'none';
+                monthNav.style.display = 'flex';
+                viewHeader.style.display = 'flex';
                 
+                const mm = String(singleMonthView + 1).padStart(2, '0');
+                document.getElementById('manualMonth').value = `${syncYear}-${mm}`;
+                
+                container.style.gridTemplateColumns = '1fr';
+                container.style.maxWidth = '100%';
+                container.style.margin = '0 auto';
+                container.classList.remove('grid-view');
+                container.classList.add('single-view');
+            } else {
+                topPanel.style.display = 'grid';
+                yearNav.style.display = 'flex';
+                monthNav.style.display = 'none';
+                viewHeader.style.display = 'none';
+                
+                container.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                container.style.maxWidth = 'none';
+                container.style.margin = '0';
+                container.classList.add('grid-view');
+                container.classList.remove('single-view');
+            }
+
+            for (let monthIdx = 0; monthIdx < 12; monthIdx++) {
+                if (singleMonthView !== null && singleMonthView !== monthIdx) continue;
+
                 const monthEvents = rawEvents.filter(ev => {
-                    if (ev.date.getMonth() !== monthIdx) return false;
+                    if (ev.date.getMonth() !== monthIdx || ev.date.getFullYear() !== syncYear) return false;
                     const normalizedEvLoc = ev.location.toUpperCase();
                     return selectedLocs.some(sel => normalizedEvLoc.includes(sel));
                 });
 
                 const card = document.createElement('div');
                 card.className = 'month-card';
+                
+                if (singleMonthView === null) {
+                    card.onclick = () => { singleMonthView = monthIdx; renderCalendar(); };
+                }
 
                 const displayMonthName = new Date(syncYear, monthIdx, 1).toLocaleString('default', { month: 'long' });
                 card.innerHTML = `<div class="month-title">${displayMonthName}</div>`;
@@ -797,9 +803,7 @@
                 const firstDayIndex = (new Date(syncYear, monthIdx, 1).getDay() + 6) % 7;
                 const totalDays = new Date(syncYear, monthIdx + 1, 0).getDate();
 
-                for (let i = 0; i < firstDayIndex; i++) {
-                    daysGrid.innerHTML += `<div class="day-cell empty-cell"></div>`;
-                }
+                for (let i = 0; i < firstDayIndex; i++) daysGrid.innerHTML += `<div class="day-cell empty-cell"></div>`;
 
                 const eventDayMap = {};
                 monthEvents.forEach(e => {
@@ -812,14 +816,10 @@
                     const cell = document.createElement('div');
                     cell.className = 'day-cell';
                     
-                    if (isCurrentYear && monthIdx === realTodayMonth && day === realTodayDate) {
-                        cell.classList.add('is-today');
-                    }
-                    
+                    if (isCurrentYear && monthIdx === realTodayMonth && day === realTodayDate) cell.classList.add('is-today');
                     cell.innerHTML = `<div class="day-num">${day}</div>`;
                     
                     if (eventDayMap[day]) {
-                        
                         const dotsContainer = document.createElement('div');
                         dotsContainer.className = 'dots-container';
 
@@ -837,14 +837,10 @@
 
                             const printDot = document.createElement('div');
                             printDot.className = isBirthday ? 'holiday-dot birthday-dot' : 'holiday-dot';
-                            if (isBirthday) {
-                                printDot.textContent = '🎂';
-                            } else {
-                                printDot.style.backgroundColor = theme.text;
-                            }
+                            if (isBirthday) printDot.textContent = '🎂';
+                            else printDot.style.backgroundColor = theme.text;
                             dotsContainer.appendChild(printDot);
                         });
-                        
                         cell.appendChild(dotsContainer);
                     }
                     daysGrid.appendChild(cell);
@@ -864,12 +860,10 @@
                 let consolidatedEvents = [];
                 Object.values(groupedDict).forEach(groupArr => {
                     groupArr.sort((a, b) => a.date.getDate() - b.date.getDate());
-                    
                     let currentChain = null;
                     groupArr.forEach(ev => {
-                        if (!currentChain) {
-                            currentChain = { ...ev, endDate: ev.date };
-                        } else {
+                        if (!currentChain) currentChain = { ...ev, endDate: ev.date };
+                        else {
                             if (ev.date.getDate() === currentChain.endDate.getDate() + 1 || ev.date.getDate() === currentChain.endDate.getDate()) {
                                 currentChain.endDate = ev.date; 
                             } else {
@@ -888,7 +882,6 @@
                     const startDay = String(group.date.getDate()).padStart(2, '0');
                     const endDay = String(group.endDate.getDate()).padStart(2, '0');
                     const dateDisplay = (startDay === endDay) ? startDay : `${startDay}-${endDay}`;
-                    
                     const theme = getThemeForLocation(group.location);
                     
                     item.innerHTML = `
@@ -902,10 +895,8 @@
                 card.appendChild(summaryDiv);
                 container.appendChild(card);
             }
+            saveState(); 
         }
-
-        initColorPickers();
-        renderCalendar(); 
     </script>
 </body>
 </html>
