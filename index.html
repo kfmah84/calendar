@@ -223,7 +223,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 16px; transition: transform 0.15s, box-shadow 0.15s;
             width: 100%; min-width: 0; /* Ensure card can shrink */
         }
-        .calendar-container.single-view { grid-template-columns: 1fr; max-width: 1170px; margin: 0 auto; }
+        .calendar-container.single-view { grid-template-columns: 1fr; width: 70%; margin: 0 auto; }
         .calendar-container.single-view .month-card { min-height: calc(100vh - 160px); cursor: default; }
         .calendar-container.single-view .days-grid  { flex-grow: 1; }
         .calendar-container.single-view .day-cell   { min-height: 100px; }
@@ -353,7 +353,7 @@
         <div class="dropdown-menu-container">
             <button class="dropdown-trigger-btn" onclick="toggleFilterDropdown(event)">Filter Category ▾</button>
             <div id="filterDropdownMenu" class="dropdown-content-panel">
-                <div class="filter-row all-row">
+                <div class="filter-row all-row">wh
                     <label class="mac-checkbox">
                         <input type="checkbox" id="chkAll" checked onchange="toggleAllLocs(this.checked)"> <strong>Select All</strong>
                     </label>
