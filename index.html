@@ -350,21 +350,7 @@
 <!-- ══ TOP TOOLBAR ══ -->
 <div class="top-form-container no-print" id="topPanel">
     <div class="action-toolbar-left">
-        <div class="dropdown-menu-container">
-            <button class="dropdown-trigger-btn" onclick="toggleFilterDropdown(event)">Filter Category ▾</button>
-            <div id="filterDropdownMenu" class="dropdown-content-panel">
-                <div class="filter-row all-row">wh
-                    <label class="mac-checkbox">
-                        <input type="checkbox" id="chkAll" checked onchange="toggleAllLocs(this.checked)"> <strong>Select All</strong>
-                    </label>
-                </div>
-                <div id="dropdownRowsPlaceholder"></div>
-            </div>
-        </div>
-        <button class="btn-secondary btn-sync" onclick="loadFromSheet()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-            Sync
-        </button>
+        <div id="calendarNameDisplay" style="font-weight:700;font-size:1.8rem;color:var(--text-main);letter-spacing:-0.02em;">Calendar Name</div>
     </div>
 
     <div class="nav-container">
@@ -381,6 +367,21 @@
     </div>
 
     <div class="action-toolbar">
+        <div class="dropdown-menu-container">
+            <button class="dropdown-trigger-btn" onclick="toggleFilterDropdown(event)">Filter Category ▾</button>
+            <div id="filterDropdownMenu" class="dropdown-content-panel" style="left:auto;right:0;">
+                <div class="filter-row all-row">
+                    <label class="mac-checkbox">
+                        <input type="checkbox" id="chkAll" checked onchange="toggleAllLocs(this.checked)"> <strong>Select All</strong>
+                    </label>
+                </div>
+                <div id="dropdownRowsPlaceholder"></div>
+            </div>
+        </div>
+        <button class="btn-secondary btn-sync" onclick="loadFromSheet()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Sync
+        </button>
         <button class="btn-icon-only" onclick="openSettingsModal()" title="Settings">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
@@ -390,11 +391,13 @@
     </div>
 </div>
 
-<div id="viewHeader" class="no-print" style="display:flex;justify-content:center;">
-    <button class="btn-back" onclick="clearSingleMonth()">
+<div id="viewHeader" class="no-print" style="display:none;justify-content:center;align-items:center;gap:12px;margin-bottom:20px;">
+    <button class="nav-btn" onclick="changeMonth(-1)" title="Previous Month">❮</button>
+    <button class="btn-back" onclick="clearSingleMonth()" style="margin-bottom:0;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Show Full Year
     </button>
+    <button class="nav-btn" onclick="changeMonth(1)" title="Next Month">❯</button>
 </div>
 
 <div id="printYearHeader" class="print-header"></div>
@@ -414,6 +417,7 @@
         <div class="tabs-nav-bar">
             <button id="navTabIntegration" class="tab-nav-btn active-tab" onclick="switchSettingsTab('Integration')">Integration</button>
             <button id="navTabThemes"      class="tab-nav-btn"            onclick="switchSettingsTab('Themes')">Themes</button>
+            <button id="navTabConfiguration" class="tab-nav-btn"         onclick="switchSettingsTab('Configuration')">Configuration</button>
         </div>
         <div id="paneIntegration" class="tab-content-pane active-pane">
             <div class="control-group">
@@ -433,6 +437,23 @@
         </div>
         <div id="paneThemes" class="tab-content-pane">
             <div id="themesListContainer" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+        <div id="paneConfiguration" class="tab-content-pane">
+            <div class="control-group">
+                <label class="group-label">Configuration Path</label>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" id="configPath" placeholder="e.g. config.cfg" onchange="saveState()" style="flex:1;min-width:0;">
+                    <button class="btn-secondary" style="width:auto;white-space:nowrap;padding:7px 16px;" onclick="document.getElementById('configFilePicker').click()">Browse</button>
+                </div>
+                <input type="file" id="configFilePicker" style="display:none;" accept=".cfg" onchange="handleFileBrowse(this)">
+                <span style="font-size:11px;color:var(--text-muted);margin-top:-2px;">Path (URL or relative) to the .cfg file for auto-loading settings.</span>
+            </div>
+            <div class="modal-actions" style="grid-template-columns:1fr;">
+                <button class="btn-secondary" onclick="exportConfig()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export .cfg
+                </button>
+            </div>
         </div>
         <div class="divider" style="margin-top:8px;"></div>
         <div class="modal-actions" style="grid-template-columns:1fr;">
@@ -655,12 +676,14 @@ function saveState() {
         dynamicCategoriesList,
         filters: Array.from(document.querySelectorAll('.category-chk')).map(c=>({value:c.value,checked:c.checked})),
         webAppUrl: document.getElementById('webAppUrl').value,
-        apiKey:    document.getElementById('apiKeyInput').value
+        apiKey:    document.getElementById('apiKeyInput').value,
+        configPath: document.getElementById('configPath').value,
+        calendarName: document.getElementById('calendarNameDisplay').textContent
     };
     localStorage.setItem('calendarGenState_v6', JSON.stringify(state));
 }
 
-function loadState() {
+async function loadState() {
     const saved = localStorage.getItem('calendarGenState_v6');
     if (saved) {
         try {
@@ -681,6 +704,8 @@ function loadState() {
             if (s.dynamicCategoriesList) dynamicCategoriesList = s.dynamicCategoriesList;
             if (s.webAppUrl) document.getElementById('webAppUrl').value = s.webAppUrl;
             if (s.apiKey)    document.getElementById('apiKeyInput').value = s.apiKey;
+            if (s.configPath) document.getElementById('configPath').value = s.configPath;
+            if (s.calendarName) document.getElementById('calendarNameDisplay').textContent = s.calendarName;
             if (s.filters) {
                 s.filters.forEach(f => {
                     const chk = document.querySelector(`.category-chk[value="${f.value}"]`);
@@ -690,6 +715,12 @@ function loadState() {
             }
         } catch(e) { console.error('loadState error', e); }
     }
+    
+    // Default config path if none set
+    if (!document.getElementById('configPath').value) {
+        document.getElementById('configPath').value = 'config.cfg';
+    }
+
     buildCategoryDropdownUI();
     populateModalCategorySelect('newEventCategorySelect');
     populateModalCategorySelect('modifyEventCategory');
@@ -697,9 +728,97 @@ function loadState() {
     initColorPickersInSettings();
     updateDropdownIndicators();
     renderCalendar();
+
+    // Auto-load config
+    await loadConfig();
 }
 
 document.addEventListener('DOMContentLoaded', loadState);
+
+// ════════════════════════════════════════════════════════
+//  CONFIGURATION
+// ════════════════════════════════════════════════════════
+function exportConfig() {
+    const config = {
+        webAppUrl: document.getElementById('webAppUrl').value,
+        apiKey: document.getElementById('apiKeyInput').value,
+        dynamicCategoriesList,
+        activeSelectionIndexes
+    };
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const fileName = document.getElementById('configPath').value.split('/').pop() || 'config.cfg';
+    a.download = fileName.endsWith('.cfg') ? fileName : fileName + '.cfg';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function handleFileBrowse(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+
+        // input.value gives the full OS path in browsers that support it,
+        // e.g. "C:\Users\Name\Documents\config.cfg"
+        // Browsers may substitute the directory with "C:\fakepath\" for privacy,
+        // but we display whatever is available — at minimum the real filename.
+        const rawInputPath = input.value; // e.g. "C:\fakepath\config.cfg"
+
+        // Try to reconstruct a meaningful path:
+        // Replace "C:\fakepath\" (or any fakepath variant) with nothing so we
+        // show just the filename when the real path is hidden, but keep the
+        // full path if the browser exposes it.
+        const isFakePath = /fakepath/i.test(rawInputPath);
+        const displayPath = isFakePath
+            ? rawInputPath.replace(/^.*fakepath[\\\/]/i, '') // just filename
+            : rawInputPath;                                   // full real path
+
+        document.getElementById('configPath').value = displayPath;
+        saveState();
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const config = JSON.parse(e.target.result);
+                applyConfig(config);
+                await loadFromSheet();
+            } catch (err) {
+                console.error('Failed to parse browsed config:', err);
+                alert('Invalid .cfg file format.');
+            }
+        };
+        reader.readAsText(file);
+    }
+}
+
+function applyConfig(config) {
+    if (config.webAppUrl) document.getElementById('webAppUrl').value = config.webAppUrl;
+    if (config.apiKey) document.getElementById('apiKeyInput').value = config.apiKey;
+    if (config.dynamicCategoriesList) dynamicCategoriesList = config.dynamicCategoriesList;
+    if (config.activeSelectionIndexes) activeSelectionIndexes = config.activeSelectionIndexes;
+    
+    buildCategoryDropdownUI();
+    populateModalCategorySelect('newEventCategorySelect');
+    populateModalCategorySelect('modifyEventCategory');
+    initColorPickersInSettings();
+    updateDropdownIndicators();
+}
+
+async function loadConfig() {
+    const path = document.getElementById('configPath').value.trim();
+    if (!path) return;
+    try {
+        const res = await fetch(path);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        // Do NOT overwrite the config path input — preserve what the user typed/browsed
+        const config = await res.json();
+        applyConfig(config);
+        await loadFromSheet();
+    } catch (e) {
+        console.warn('Failed to auto-load config from path:', path, e);
+    }
+}
 
 // ════════════════════════════════════════════════════════
 //  CATEGORY HELPERS
@@ -1057,6 +1176,12 @@ async function loadFromSheet(){
 
         if (data.status !== 'ok') throw new Error(data.message || 'Web App returned an error.');
 
+        // Update Calendar Name if SHEET_NAME is provided
+        const sName = data.SHEET_NAME || data.sheetName;
+        if (sName) {
+            document.getElementById('calendarNameDisplay').textContent = sName;
+        }
+
         rawEvents = [];
         (data.events || []).forEach(ev => {
             if (!ev.startDate || !ev.holiday) return;
@@ -1144,7 +1269,8 @@ function renderCalendar(){
         }
 
         const mName = new Date(syncYear,monthIdx,1).toLocaleString('default',{month:'long'});
-        card.innerHTML=`<div class="month-title">${mName}</div>`;
+        const titleText = (singleMonthView !== null) ? `${mName} ${syncYear}` : mName;
+        card.innerHTML=`<div class="month-title">${titleText}</div>`;
 
         const daysGrid=document.createElement('div');
         daysGrid.className='days-grid';
